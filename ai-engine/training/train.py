@@ -13,6 +13,7 @@ import sys
 import time
 from pathlib import Path
 
+import cv2
 import numpy as np
 import torch
 import torch.nn as nn
@@ -51,6 +52,23 @@ def set_seed(seed: int) -> None:
     torch.manual_seed(seed)
     if torch.cuda.is_available():
         torch.cuda.manual_seed_all(seed)
+
+
+def is_decodable_video(path: Path) -> bool:
+    if not path.exists() or path.stat().st_size == 0:
+        return False
+    if path.stat().st_size < 1024:
+        try:
+            if path.read_bytes().startswith(b"version https://git-lfs.github.com/spec/v1"):
+                return False
+        except OSError:
+            return False
+    cap = cv2.VideoCapture(str(path))
+    ok = cap.isOpened()
+    if ok:
+        ok, _ = cap.read()
+    cap.release()
+    return bool(ok)
 
 
 def compute_class_weights(train_rows: list[dict], num_classes: int, classes: str) -> torch.Tensor:
@@ -187,15 +205,18 @@ def main() -> None:
     mapping = load_source_mapping(data_cfg.source_mapping)
     annotate_subject_keys(rows, mapping)
 
-    # 只保留有视频文件且标签在三类内的记录（当前卧室/卫生间为空）。
+    # 只保留视频存在且标签可映射的记录；risk_behavior 作为非跌倒/正常风险行为。
     valid = []
     for r in rows:
-        if r.get("action_label", "normal") not in ("fall", "nearfall", "normal"):
+        if r.get("action_label", "normal") not in ("fall", "nearfall", "normal", "risk_behavior"):
             continue
-        if not (data_cfg.data_root / r["video_path"]).exists():
+        video_path = data_cfg.data_root / r["video_path"]
+        if not is_decodable_video(video_path):
             continue
         valid.append(r)
+    skipped = len(rows) - len(valid)
     rows = valid
+    print(f"decodable clips={len(rows)} skipped={skipped}")
 
     if train_cfg.max_clips and 0 < train_cfg.max_clips < len(rows):
         rng = random.Random(args.seed)
@@ -211,7 +232,11 @@ def main() -> None:
     print("precomputing skeletons ...")
     t0 = time.time()
     all_rows = train_rows + val_rows
-    precompute_skeletons(all_rows, data_cfg, skip_existing=args.skip_skeleton, progress=lambda done, total: None)
+    def report_progress(done: int, total: int) -> None:
+        if done % 10 == 0 or done == total:
+            print(f"skeleton {done}/{total}", flush=True)
+
+    precompute_skeletons(all_rows, data_cfg, skip_existing=args.skip_skeleton, progress=report_progress)
     print(f"skeleton done in {time.time() - t0:.1f}s")
 
     train_ds = build_dataset(train_rows, data_cfg, args.classes)
@@ -229,6 +254,17 @@ def main() -> None:
     out_dir = train_cfg.output_dir
     out_dir.mkdir(parents=True, exist_ok=True)
     run_name = f"{args.model}_{args.classes}_w{args.window_len}"
+    audit = {
+        "manifest_rows": len(rows),
+        "skipped_rows": skipped,
+        "train_rows": len(train_rows),
+        "val_rows": len(val_rows),
+        "train_subjects": sorted({r["_subject_key"] for r in train_rows}),
+        "val_subjects": sorted({r["_subject_key"] for r in val_rows}),
+        "train_label_counts": count_labels(train_rows, args.classes),
+        "val_label_counts": count_labels(val_rows, args.classes),
+    }
+    (out_dir / f"{run_name}.audit.json").write_text(json.dumps(audit, ensure_ascii=False, indent=2), encoding="utf-8")
     best_f1 = -1.0
     best_state = None
     best_metrics = None
@@ -248,6 +284,7 @@ def main() -> None:
 
     print("\n== best validation ==")
     print(format_metrics(best_metrics, names))
+    model.load_state_dict(best_state)
 
     ckpt_path = out_dir / f"{run_name}.pt"
     torch.save(

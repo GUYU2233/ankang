@@ -44,6 +44,10 @@ python -m training.train --model tcn --skip-skeleton
 - 指标：同名 `.metrics.json`；混淆矩阵：同名 `.confusion.png`。
 - 模型：同名 `.onnx`（输入 `skeleton` 形状 `(N, 3, T, 17)`，输出 `logits`）。
 
+## 在线接入
+
+训练完成后，将最佳模型复制到 `ai-engine/models/tcn_fall.onnx`（模型文件默认被 Git 忽略）。AI 引擎按请求中的 `stream_id`（后端默认使用设备 ID）缓存 32 帧骨架；窗口未满时使用几何启发式，窗口满后使用 ONNX 时序概率。也可通过环境变量 `TEMPORAL_MODEL_PATH` 指定模型路径。
+
 ## 单独评测 / 重新导出
 
 ```powershell
@@ -53,6 +57,6 @@ python -m training.export_onnx --checkpoint ai-engine/runs/tcn_binary_w32.pt --o
 
 ## 局限
 
-- 当前只有 livingroom 场景有数据；bedroom/bathroom 为空。
-- 数据为年轻受试者模拟跌倒，无真实老人；分辨率 320/640x240，低于 720p 规范。
-- 该基线用于验证闭环与可复现性，正式精度需在补足数据后重新训练。
+- 当前 manifest 有 550 条记录，其中 540 条视频可解码；仍有 10 条缺失或损坏片段会被预检跳过。
+- 已覆盖 livingroom、bedroom、bathroom、outdoor；数据仍以模拟/公开受试者为主，无真实老人居家跌倒。
+- 分辨率、拍摄视角和来源差异较大；正式比赛指标应按场景、受试者和来源分别报告。

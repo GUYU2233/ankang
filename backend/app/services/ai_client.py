@@ -14,7 +14,7 @@ class AIEngineClient:
     def __init__(self) -> None:
         self.settings = get_settings()
 
-    def infer_frame(self, frame) -> AIInferResponse | None:
+    def infer_frame(self, frame, stream_id: str = "default") -> AIInferResponse | None:
         ok, buf = cv2.imencode(".jpg", frame, [cv2.IMWRITE_JPEG_QUALITY, 85])
         if not ok:
             return None
@@ -22,6 +22,7 @@ class AIEngineClient:
             resp = httpx.post(
                 f"{self.settings.ai_engine_url}/v1/infer",
                 files={"file": ("frame.jpg", buf.tobytes(), "image/jpeg")},
+                params={"stream_id": stream_id},
                 timeout=8,
             )
             resp.raise_for_status()

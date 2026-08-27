@@ -54,7 +54,7 @@ class DetectionLoop:
             if device is None:
                 return None
             packet = stream_service.get_frame(device)
-            infer = ai_client.infer_frame(packet.frame)
+            infer = ai_client.infer_frame(packet.frame, stream_id=f"device-{device.id}")
             if infer is None:
                 infer = stream_service.build_demo_result(device, packet.meta)
             return self.alert_engine.process(db, device, infer, infer.risk_score, time.time())

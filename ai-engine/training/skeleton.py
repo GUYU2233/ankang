@@ -143,8 +143,11 @@ def precompute_skeletons(
         if skip_existing and cache_path.exists():
             cache_map[video.stem] = cache_path
         else:
-            extract_and_cache(row, cfg, extractor, batch_size)
-            cache_map[video.stem] = cache_path
+            try:
+                extract_and_cache(row, cfg, extractor, batch_size)
+                cache_map[video.stem] = cache_path
+            except Exception as exc:
+                print(f"skeleton skipped {row['video_path']}: {exc}", flush=True)
         if progress:
             progress(i + 1, total)
     return cache_map

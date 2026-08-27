@@ -1,7 +1,7 @@
 """数据清单加载与按受试者划分。
 
-说明：manifest.csv 的 subject_id 全部为 unknown（公开数据集不发布人口学信息），
-因此用 source_file 派生受试者键，避免同一受试者/序列在训练集与验证集之间泄漏：
+说明：优先使用 manifest.csv 中明确的 subject_id；仅当 subject_id 缺失或为 unknown 时，
+才用 source_file 派生受试者键，避免同一受试者/序列在训练集与验证集之间泄漏：
 
 - URFD：fall-01-cam0 与 fall-01-cam1 是同一跌倒事件的两个机位，归入同一 subject key；
 - Le2i：每个 source_file 是一段独立序列，各自作为独立 subject。
@@ -16,8 +16,8 @@ from pathlib import Path
 
 _URFD_SEQ = re.compile(r"(fall|adl)-([0-9]+)", re.IGNORECASE)
 
-ACTION_TO_BINARY = {"fall": 1, "nearfall": 0, "normal": 0}
-ACTION_TO_TERNARY = {"fall": 0, "nearfall": 1, "normal": 2}
+ACTION_TO_BINARY = {"fall": 1, "nearfall": 0, "normal": 0, "risk_behavior": 0}
+ACTION_TO_TERNARY = {"fall": 0, "nearfall": 1, "normal": 2, "risk_behavior": 2}
 
 
 def load_csv(path: Path) -> list[dict]:
@@ -56,7 +56,11 @@ def subject_key_from_source(source_dataset: str, source_file: str) -> str:
 
 
 def derive_subject_key(row: dict, mapping: dict[str, dict] | None = None) -> str:
-    """从 manifest 行派生受试者键。优先 source_mapping.csv，其次解析 note 字段。"""
+    """从 manifest 行派生受试者键。优先明确 subject_id，再回退到来源序列。"""
+    subject_id = (row.get("subject_id") or "").strip()
+    if subject_id and subject_id.lower() not in {"unknown", "none", "null", "na", "n/a"}:
+        return "subject:" + subject_id.lower()
+
     video = Path(row.get("video_path", "")).name
     m = (mapping or {}).get(video)
     if m and (m.get("source_dataset") or m.get("source_file")):

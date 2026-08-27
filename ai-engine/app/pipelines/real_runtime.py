@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+import os
+from collections import deque
+from pathlib import Path
 from typing import Any
 
 import cv2
@@ -17,7 +20,11 @@ class RealRuntime:
 
     def __init__(self, model_path: str | None = None) -> None:
         self.model_path = model_path or "models/yolov8n-pose.pt"
+        self.temporal_model_path = os.getenv("TEMPORAL_MODEL_PATH", "models/tcn_fall.onnx")
         self._model = None
+        self._temporal = None
+        self._buffers: dict[str, deque[np.ndarray]] = {}
+        self.temporal_window = 32
 
     def _load_model(self):
         if self._model is None:
@@ -31,7 +38,59 @@ class RealRuntime:
                 self._model = False
         return self._model if self._model is not False else None
 
-    def infer(self, frame_bgr: np.ndarray) -> dict | None:
+    def _load_temporal_model(self):
+        if self._temporal is None:
+            try:
+                import onnxruntime as ort
+                path = Path(self.temporal_model_path)
+                if not path.exists():
+                    self._temporal = False
+                else:
+                    self._temporal = ort.InferenceSession(str(path), providers=["CUDAExecutionProvider", "CPUExecutionProvider"])
+                    logger.info(f"时序模型已加载: {path}")
+            except Exception as exc:
+                logger.info(f"时序模型不可用: {exc}")
+                self._temporal = False
+        return self._temporal if self._temporal is not False else None
+
+    @staticmethod
+    def _normalize_skeleton(kpts: np.ndarray) -> np.ndarray:
+        out = np.zeros_like(kpts, dtype=np.float32)
+        conf = kpts[:, 2]
+        valid = conf > 0.0
+        xy = kpts[:, :2]
+        if valid[5] and valid[6] and valid[11] and valid[12]:
+            shoulder = (xy[5] + xy[6]) / 2.0
+            hip = (xy[11] + xy[12]) / 2.0
+            center = hip
+            scale = float(np.linalg.norm(shoulder - hip))
+        elif valid.any():
+            pts = xy[valid]
+            center = pts.mean(axis=0)
+            scale = float(np.max(np.linalg.norm(pts - center, axis=1)))
+        else:
+            return out
+        out[:, :2] = (xy - center) / max(scale, 1e-6)
+        out[:, 2] = conf
+        out[~valid] = 0.0
+        return out
+
+    def _temporal_fall(self, kpts: np.ndarray, stream_id: str) -> float | None:
+        session = self._load_temporal_model()
+        if session is None:
+            return None
+        buf = self._buffers.setdefault(stream_id, deque(maxlen=self.temporal_window))
+        buf.append(self._normalize_skeleton(kpts))
+        if len(buf) < self.temporal_window:
+            return None
+        seq = np.stack(list(buf), axis=0).astype(np.float32)
+        x = np.transpose(seq, (2, 0, 1))[None, ...]
+        logits = session.run(None, {session.get_inputs()[0].name: x})[0][0]
+        logits = logits - np.max(logits)
+        probs = np.exp(logits) / np.sum(np.exp(logits))
+        return float(probs[1]) if len(probs) > 1 else float(probs[0])
+
+    def infer(self, frame_bgr: np.ndarray, stream_id: str = "default") -> dict | None:
         model = self._load_model()
         if model is None:
             return None
@@ -50,6 +109,10 @@ class RealRuntime:
             return self._empty_result()
         xyxy = boxes.xyxy.cpu().numpy()[0]
         fall_detected, fall_prob = self._fall_by_keypoints(kpts, frame_bgr.shape)
+        temporal_prob = self._temporal_fall(kpts, stream_id)
+        if temporal_prob is not None:
+            fall_prob = temporal_prob
+            fall_detected = temporal_prob >= 0.5
         risk_factors = self._risk_factors(kpts, frame_bgr.shape, fall_prob)
         risk_score = max(fall_prob, min(0.9, sum(float(f["value"]) for f in risk_factors) / len(risk_factors)))
         level = "green"
