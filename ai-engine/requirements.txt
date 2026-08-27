@@ -1,0 +1,11 @@
+fastapi>=0.115
+uvicorn[standard]>=0.30
+numpy>=1.26
+opencv-python-headless>=4.9
+pydantic>=2.0
+loguru>=0.7
+python-multipart>=0.0.9
+# 训练/真实推理依赖（接入数据集后再安装）
+# ultralytics>=8.2
+# torch>=2.0
+# torchvision>=0.15

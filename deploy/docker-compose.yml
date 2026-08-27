@@ -1,0 +1,75 @@
+version: "3.9"
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: zha-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root123456
+      TZ: Asia/Shanghai
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    command: --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb4
+
+  redis:
+    image: redis:7-alpine
+    container_name: zha-redis
+    ports:
+      - "6379:6379"
+
+  emqx:
+    image: emqx/emqx:5.6
+    container_name: zha-emqx
+    ports:
+      - "1883:1883"
+      - "8083:8083"
+      - "18083:18083"
+
+  zlm:
+    image: zlmediakit/zlmediakit:master
+    container_name: zha-zlm
+    ports:
+      - "1935:1935"
+      - "8554:8554"
+      - "10000:10000"
+
+  backend:
+    build:
+      context: ..
+      dockerfile: deploy/backend.Dockerfile
+    container_name: zha-backend
+    environment:
+      DATABASE_URL: mysql+pymysql://root:root123456@mysql:3306/zhihu_ankang?charset=utf8mb4
+      AI_ENGINE_URL: http://ai-engine:8100
+      CORS_ORIGINS: http://localhost,http://localhost:5173
+      EZVIZ_APP_KEY: ${EZVIZ_APP_KEY:-}
+      EZVIZ_APP_SECRET: ${EZVIZ_APP_SECRET:-}
+    ports:
+      - "8000:8000"
+    depends_on:
+      - mysql
+      - ai-engine
+
+  ai-engine:
+    build:
+      context: ..
+      dockerfile: deploy/ai-engine.Dockerfile
+    container_name: zha-ai-engine
+    ports:
+      - "8100:8100"
+
+  frontend:
+    build:
+      context: ..
+      dockerfile: deploy/frontend.Dockerfile
+    container_name: zha-frontend
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
+
+volumes:
+  mysql-data:
