@@ -1,0 +1,28 @@
+{
+  "video": "livingroom_fall_w04_20260827.mp4",
+  "scene": "livingroom",
+  "action_label": "fall",
+  "event_type": "fall",
+  "fall_start_ts": 0.3,
+  "fall_end_ts": 22.8,
+  "person_bbox": null,
+  "lighting": "day",
+  "occlusion": "unknown",
+  "subject": {
+    "subject_id": "unknown",
+    "age_group": "unknown",
+    "gender": "unknown",
+    "mobility_aid": "unknown"
+  },
+  "notes": "source=YouTube web; yt-dlp_id=6H3luxHi7rw; url=https://www.youtube.com/watch?v=6H3luxHi7rw; title=Fall down Detection (from bed); approx, web source, not frame-accurate; person_bbox not invented; Titled 'Fall down Detection (from bed)' but visible scene is indoor lab/workshop (tables/shelves, no bed). Person ends on floor. Mapped to livingroom. Simulated.",
+  "source_dataset": "WebVideo",
+  "source_file": "https://www.youtube.com/watch?v=6H3luxHi7rw",
+  "source_id": "6H3luxHi7rw",
+  "source_title": "Fall down Detection (from bed)",
+  "camera": "unknown",
+  "camera_angle": "ceiling",
+  "resolution": "1148x720",
+  "fps": 30.0,
+  "duration_s": 23.0,
+  "sensor_file": null
+}

@@ -1,0 +1,29 @@
+{
+  "video": "bedroom_lie_down_004_20260827.mp4",
+  "scene": "bedroom",
+  "action_label": "nearfall",
+  "event_type": "lie_down",
+  "fall_start_ts": 8.0,
+  "fall_end_ts": 11.0,
+  "person_bbox": null,
+  "lighting": "day",
+  "occlusion": "unknown",
+  "subject": {
+    "subject_id": "S_GMDCSA_02",
+    "age_group": "unknown",
+    "gender": "unknown",
+    "mobility_aid": "unknown"
+  },
+  "notes": "source=GMDCSA-24 Subject 2 ADL/03.mp4; source_scene=home (3 environments), mapped to bedroom because official description mentions a bed; actors=simulated (not elderly); demographics unknown in official files; original_resolution=1280x720; lighting from CSV Time of Recording='Day' -> day; official classes='Sitting[5.6 to 7.4]; Sleeping[8 to 11]; Walking[0 to 4.6]'; description='Walking; removing dust from the bed using a pillow; and sleeping on the bed'; fall_start/end from official CSV class time spans; license=CC BY 4.0 (Zenodo 10.5281/zenodo.13354453); GitHub copy also MIT",
+  "source_dataset": "GMDCSA-24",
+  "source_file": "Subject 2/ADL/03.mp4",
+  "camera": "laptop_webcam",
+  "camera_angle": "unknown",
+  "resolution": "1280x720",
+  "fps": 29.822405897464538,
+  "duration_s": 11.944042,
+  "sensor_file": null,
+  "source_description": "Walking; removing dust from the bed using a pillow; and sleeping on the bed",
+  "source_classes": "Sitting[5.6 to 7.4]; Sleeping[8 to 11]; Walking[0 to 4.6]",
+  "time_of_recording": "Day"
+}

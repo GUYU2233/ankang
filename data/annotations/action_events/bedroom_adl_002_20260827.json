@@ -1,0 +1,29 @@
+{
+  "video": "bedroom_adl_002_20260827.mp4",
+  "scene": "bedroom",
+  "action_label": "normal",
+  "event_type": "sitting",
+  "fall_start_ts": null,
+  "fall_end_ts": null,
+  "person_bbox": null,
+  "lighting": "day",
+  "occlusion": "unknown",
+  "subject": {
+    "subject_id": "S_GMDCSA_01",
+    "age_group": "unknown",
+    "gender": "unknown",
+    "mobility_aid": "unknown"
+  },
+  "notes": "source=GMDCSA-24 Subject 1 ADL/05.mp4; source_scene=home (3 environments), mapped to bedroom because official description mentions a bed; actors=simulated (not elderly); demographics unknown in official files; original_resolution=1280x720; lighting from CSV Time of Recording='Day (Light On)' -> day; official classes='Reading[6 to 10]; Sitting[3 to 10]; Walking[1 to 3]'; description='Coming to the bed and reading book in the sitting position. Front view of the subject. One leg folded'; fall_start/end from official CSV class time spans (left blank: no official span for this primary event); license=CC BY 4.0 (Zenodo 10.5281/zenodo.13354453); GitHub copy also MIT",
+  "source_dataset": "GMDCSA-24",
+  "source_file": "Subject 1/ADL/05.mp4",
+  "camera": "laptop_webcam",
+  "camera_angle": "unknown",
+  "resolution": "1280x720",
+  "fps": 29.775451373084508,
+  "duration_s": 10.5456,
+  "sensor_file": null,
+  "source_description": "Coming to the bed and reading book in the sitting position. Front view of the subject. One leg folded",
+  "source_classes": "Reading[6 to 10]; Sitting[3 to 10]; Walking[1 to 3]",
+  "time_of_recording": "Day (Light On)"
+}

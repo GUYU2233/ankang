@@ -1,0 +1,31 @@
+{
+  "video": "livingroom_nearfall_ncam04_20260827.mp4",
+  "scene": "livingroom",
+  "action_label": "nearfall",
+  "event_type": "lie_down",
+  "fall_start_ts": 0.3,
+  "fall_end_ts": 9.81,
+  "person_bbox": null,
+  "lighting": "daylight",
+  "occlusion": "unknown",
+  "people_count": "1p",
+  "subject": {
+    "subject_id": "unknown",
+    "age_group": "adult",
+    "gender": "male",
+    "mobility_aid": "none"
+  },
+  "notes": "source=SmartHome-Bench smartbench_0022; url=https://www.youtube.com/watch?v=iF3N61nr6JA; people_count=1p; camera_angle=wall_mount; source_id=iF3N61nr6JA; clip_window_s=16.0-26.0; man pulled to floor by dog then lying on rug; lie-down/nearfall not a confirmed injury fall; outdoor doorbell tail trimmed; fall timestamps approximate not frame-accurate; person_bbox not invented; paper=https://arxiv.org/abs/2506.12992; repo=https://github.com/Xinyi-0724/SmartHome-Bench-LLM",
+  "source_dataset": "SmartHome-Bench",
+  "source_file": "https://www.youtube.com/watch?v=iF3N61nr6JA",
+  "source_id": "iF3N61nr6JA",
+  "source_title": "smartbench_0022",
+  "camera": "smart_home",
+  "camera_angle": "wall_mount",
+  "resolution": "1920x1080",
+  "fps": 23.976023976023978,
+  "duration_s": 10.01,
+  "sensor_file": null,
+  "clip_start_s": 16.0,
+  "clip_end_s": 26.0
+}

@@ -1,0 +1,29 @@
+{
+  "video": "livingroom_fall_214_20260827.mp4",
+  "scene": "livingroom",
+  "action_label": "fall",
+  "event_type": "left_fall",
+  "fall_start_ts": 2.4,
+  "fall_end_ts": 6.0,
+  "person_bbox": null,
+  "lighting": "low",
+  "occlusion": "unknown",
+  "subject": {
+    "subject_id": "S_GMDCSA_04",
+    "age_group": "unknown",
+    "gender": "unknown",
+    "mobility_aid": "unknown"
+  },
+  "notes": "source=GMDCSA-24 Subject 4 Fall/07.mp4; source_scene=home (3 environments), mapped to livingroom because no bed/bathroom fixture labeled; actors=simulated (not elderly); demographics unknown in official files; original_resolution=1280x720; lighting from CSV Time of Recording='Day (Lights Off)' -> low; official classes='Falling (SW)[2.4 to 6]; Walking[0 to 1.6]'; description='Walking then falling (LS) on the floor'; fall_start/end from official CSV class time spans; license=CC BY 4.0 (Zenodo 10.5281/zenodo.13354453); GitHub copy also MIT",
+  "source_dataset": "GMDCSA-24",
+  "source_file": "Subject 4/Fall/07.mp4",
+  "camera": "laptop_webcam",
+  "camera_angle": "unknown",
+  "resolution": "1280x720",
+  "fps": 29.817447436175332,
+  "duration_s": 6.305033,
+  "sensor_file": null,
+  "source_description": "Walking then falling (LS) on the floor",
+  "source_classes": "Falling (SW)[2.4 to 6]; Walking[0 to 1.6]",
+  "time_of_recording": "Day (Lights Off)"
+}

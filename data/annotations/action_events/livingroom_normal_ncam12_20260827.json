@@ -1,0 +1,31 @@
+{
+  "video": "livingroom_normal_ncam12_20260827.mp4",
+  "scene": "livingroom",
+  "action_label": "normal",
+  "event_type": "adl",
+  "fall_start_ts": null,
+  "fall_end_ts": null,
+  "person_bbox": null,
+  "lighting": "daylight",
+  "occlusion": "unknown",
+  "people_count": "2p+",
+  "subject": {
+    "subject_id": "unknown",
+    "age_group": "adult",
+    "gender": "female",
+    "mobility_aid": "none"
+  },
+  "notes": "source=SmartHome-Bench smartbench_0259; url=https://www.youtube.com/watch?v=_Psi3NnuNiw; people_count=2p+; camera_angle=wall_mount; source_id=_Psi3NnuNiw; clip_window_s=2.0-35.0; Ring indoor open-plan living/kitchen; two women standing/talking; fall timestamps approximate not frame-accurate; person_bbox not invented; paper=https://arxiv.org/abs/2506.12992; repo=https://github.com/Xinyi-0724/SmartHome-Bench-LLM",
+  "source_dataset": "SmartHome-Bench",
+  "source_file": "https://www.youtube.com/watch?v=_Psi3NnuNiw",
+  "source_id": "_Psi3NnuNiw",
+  "source_title": "smartbench_0259",
+  "camera": "smart_home",
+  "camera_angle": "wall_mount",
+  "resolution": "1920x1080",
+  "fps": 23.976023976023978,
+  "duration_s": 33.033,
+  "sensor_file": null,
+  "clip_start_s": 2.0,
+  "clip_end_s": 35.0
+}

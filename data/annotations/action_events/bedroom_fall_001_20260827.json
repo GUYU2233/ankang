@@ -1,0 +1,29 @@
+{
+  "video": "bedroom_fall_001_20260827.mp4",
+  "scene": "bedroom",
+  "action_label": "fall",
+  "event_type": "forward_fall",
+  "fall_start_ts": 0.0,
+  "fall_end_ts": 7.0,
+  "person_bbox": null,
+  "lighting": "day",
+  "occlusion": "unknown",
+  "subject": {
+    "subject_id": "S_GMDCSA_02",
+    "age_group": "unknown",
+    "gender": "unknown",
+    "mobility_aid": "unknown"
+  },
+  "notes": "source=GMDCSA-24 Subject 2 Fall/03.mp4; source_scene=home (3 environments), mapped to bedroom because official description mentions a bed; actors=simulated (not elderly); demographics unknown in official files; original_resolution=1280x720; lighting from CSV Time of Recording='Day' -> day; official classes='Falling (FW)[0 to 7]'; description='Forward fall on the bed'; fall_start/end from official CSV class time spans; license=CC BY 4.0 (Zenodo 10.5281/zenodo.13354453); GitHub copy also MIT",
+  "source_dataset": "GMDCSA-24",
+  "source_file": "Subject 2/Fall/03.mp4",
+  "camera": "laptop_webcam",
+  "camera_angle": "unknown",
+  "resolution": "1280x720",
+  "fps": 29.822908727697907,
+  "duration_s": 7.058396,
+  "sensor_file": null,
+  "source_description": "Forward fall on the bed",
+  "source_classes": "Falling (FW)[0 to 7]",
+  "time_of_recording": "Day"
+}

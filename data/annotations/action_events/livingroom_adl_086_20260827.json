@@ -1,0 +1,29 @@
+{
+  "video": "livingroom_adl_086_20260827.mp4",
+  "scene": "livingroom",
+  "action_label": "normal",
+  "event_type": "walking",
+  "fall_start_ts": null,
+  "fall_end_ts": null,
+  "person_bbox": null,
+  "lighting": "low",
+  "occlusion": "unknown",
+  "subject": {
+    "subject_id": "S_GMDCSA_04",
+    "age_group": "unknown",
+    "gender": "unknown",
+    "mobility_aid": "unknown"
+  },
+  "notes": "source=GMDCSA-24 Subject 4 ADL/06.mp4; source_scene=home (3 environments), mapped to livingroom because no bed/bathroom fixture labeled; actors=simulated (not elderly); demographics unknown in official files; original_resolution=1280x720; lighting from CSV Time of Recording='Day (Lights Off)' -> low; official classes='Exercising[1.4 to 6]; Walking[0 to 1]'; description='Doing exercise (push-up); view 2'; fall_start/end from official CSV class time spans (left blank: no official span for this primary event); license=CC BY 4.0 (Zenodo 10.5281/zenodo.13354453); GitHub copy also MIT",
+  "source_dataset": "GMDCSA-24",
+  "source_file": "Subject 4/ADL/06.mp4",
+  "camera": "laptop_webcam",
+  "camera_angle": "unknown",
+  "resolution": "1280x720",
+  "fps": 29.79810265142301,
+  "duration_s": 6.584167,
+  "sensor_file": null,
+  "source_description": "Doing exercise (push-up); view 2",
+  "source_classes": "Exercising[1.4 to 6]; Walking[0 to 1]",
+  "time_of_recording": "Day (Lights Off)"
+}

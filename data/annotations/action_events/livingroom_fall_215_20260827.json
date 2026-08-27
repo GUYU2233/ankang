@@ -1,0 +1,29 @@
+{
+  "video": "livingroom_fall_215_20260827.mp4",
+  "scene": "livingroom",
+  "action_label": "fall",
+  "event_type": "forward_fall",
+  "fall_start_ts": 2.2,
+  "fall_end_ts": 5.0,
+  "person_bbox": null,
+  "lighting": "day",
+  "occlusion": "unknown",
+  "subject": {
+    "subject_id": "S_GMDCSA_04",
+    "age_group": "unknown",
+    "gender": "unknown",
+    "mobility_aid": "unknown"
+  },
+  "notes": "source=GMDCSA-24 Subject 4 Fall/10.mp4; source_scene=home (3 environments), mapped to livingroom because no bed/bathroom fixture labeled; actors=simulated (not elderly); demographics unknown in official files; original_resolution=1280x720; lighting from CSV Time of Recording='Day (Lights On)' -> day; official classes='Falling (FW)[2.2 to 5]; Reading[0 to 2.1]; Sitting[0 to 2.1]'; description='Reading a book while sitting on the chair then falling (FW) on the ground'; fall_start/end from official CSV class time spans; license=CC BY 4.0 (Zenodo 10.5281/zenodo.13354453); GitHub copy also MIT",
+  "source_dataset": "GMDCSA-24",
+  "source_file": "Subject 4/Fall/10.mp4",
+  "camera": "laptop_webcam",
+  "camera_angle": "unknown",
+  "resolution": "1280x720",
+  "fps": 29.856254984280977,
+  "duration_s": 5.074875,
+  "sensor_file": null,
+  "source_description": "Reading a book while sitting on the chair then falling (FW) on the ground",
+  "source_classes": "Falling (FW)[2.2 to 5]; Reading[0 to 2.1]; Sitting[0 to 2.1]",
+  "time_of_recording": "Day (Lights On)"
+}

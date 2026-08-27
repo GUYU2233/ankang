@@ -1,0 +1,33 @@
+{
+  "video": "livingroom_hop_002_20260827.mp4",
+  "scene": "livingroom",
+  "action_label": "normal",
+  "event_type": "hopping",
+  "fall_start_ts": null,
+  "fall_end_ts": null,
+  "person_bbox": [
+    316.0,
+    82.0,
+    391.0,
+    337.0
+  ],
+  "lighting": "artificial",
+  "occlusion": "none",
+  "subject": {
+    "subject_id": "S_CAUCA_10",
+    "age_group": "unknown",
+    "gender": "unknown",
+    "mobility_aid": "unknown"
+  },
+  "notes": "source=CAUCAFall Subject.10/Hop/HopS10.avi; source_scene=uncontrolled home (HIKVISION IR, upper-corner wall camera), mapped to livingroom (no official bed/bathroom scene tag; bathroom not invented); actors=simulated (not elderly); per-subject age/gender not in Dataset details.xlsx; original_resolution=720x480 (not upsampled); fps_probe=20; lighting from Dataset details.xlsx: 'Data was acquired in artificial light, approximately 130 lux.' -> artificial; occlusion=none; camera-fall distance=None; angle_of_fall=None; YOLO class 0=nofall 1=fall; fall_start/end from first/last class-1 frames at (frame-1)/fps (left blank: ADL / no class-1 frames); hopping mapped to normal (noted); kneeling/sit_down/pick_up mapped to nearfall; license=CC BY 4.0; DOI 10.17632/7w7fccy7ky.5",
+  "source_dataset": "CAUCAFall",
+  "source_file": "Subject.10/Hop/HopS10.avi",
+  "camera": "HIKVISION_IR",
+  "camera_angle": "high_corner",
+  "resolution": "720x480",
+  "fps": 20.0,
+  "duration_s": 12.4,
+  "sensor_file": null,
+  "camera_fall_distance_m": null,
+  "angle_of_fall": null
+}

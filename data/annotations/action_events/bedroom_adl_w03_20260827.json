@@ -1,0 +1,28 @@
+{
+  "video": "bedroom_adl_w03_20260827.mp4",
+  "scene": "bedroom",
+  "action_label": "normal",
+  "event_type": "bed_exit",
+  "fall_start_ts": null,
+  "fall_end_ts": null,
+  "person_bbox": null,
+  "lighting": "night",
+  "occlusion": "unknown",
+  "subject": {
+    "subject_id": "unknown",
+    "age_group": "unknown",
+    "gender": "female",
+    "mobility_aid": "unknown"
+  },
+  "notes": "source=YouTube web; yt-dlp_id=nHozKR2cbeo; url=https://www.youtube.com/watch?v=nHozKR2cbeo; title=Safe Way to Get In and Out of Bed for Seniors; approx, web source, not frame-accurate; person_bbox not invented; Low-light/night bedroom; motion-activated step light; person standing beside bed after/before bed-exit. Educational product demo.",
+  "source_dataset": "WebVideo",
+  "source_file": "https://www.youtube.com/watch?v=nHozKR2cbeo",
+  "source_id": "nHozKR2cbeo",
+  "source_title": "Safe Way to Get In and Out of Bed for Seniors",
+  "camera": "unknown",
+  "camera_angle": "side",
+  "resolution": "1920x1080",
+  "fps": 29.944,
+  "duration_s": 18.000267,
+  "sensor_file": null
+}

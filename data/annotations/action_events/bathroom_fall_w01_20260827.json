@@ -1,0 +1,28 @@
+{
+  "video": "bathroom_fall_w01_20260827.mp4",
+  "scene": "bathroom",
+  "action_label": "fall",
+  "event_type": "fall",
+  "fall_start_ts": 0.3,
+  "fall_end_ts": 23.791,
+  "person_bbox": null,
+  "lighting": "unknown",
+  "occlusion": "unknown",
+  "subject": {
+    "subject_id": "unknown",
+    "age_group": "unknown",
+    "gender": "unknown",
+    "mobility_aid": "unknown"
+  },
+  "notes": "source=YouTube web; yt-dlp_id=pXb66KcrtVQ; url=https://www.youtube.com/watch?v=pXb66KcrtVQ; title=Nursing home's smart restroom and bathroom fall detection demo; approx, web source, not frame-accurate; person_bbox not invented; 3D simulated nursing-home restroom demo (toilets/sinks/shower visible). HKSB Fall & Non-movement Detection AI System. Not a real RGB person; avatar/figure on floor with FALL DETECTED overlay. Included because public bathroom-fall RGB is scarce.",
+  "source_dataset": "WebVideo",
+  "source_file": "https://www.youtube.com/watch?v=pXb66KcrtVQ",
+  "source_id": "pXb66KcrtVQ",
+  "source_title": "Nursing home's smart restroom and bathroom fall detection demo",
+  "camera": "unknown",
+  "camera_angle": "ceiling",
+  "resolution": "1920x1080",
+  "fps": 29.97002997002997,
+  "duration_s": 23.990633,
+  "sensor_file": null
+}
