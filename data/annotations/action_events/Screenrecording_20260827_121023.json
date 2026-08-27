@@ -1,0 +1,21 @@
+{
+  "video": "Screenrecording_20260827_121023.mp4",
+  "scene": "outdoor",
+  "action_label": "fall",
+  "event_type": "rear_step_fall",
+  "fall_start_ts": 0.9,
+  "fall_end_ts": 1.25,
+  "person_bbox": null,
+  "lighting": "day",
+  "occlusion": "partial",
+  "subject": {
+    "subject_id": "unknown",
+    "age_group": "unknown",
+    "gender": "unknown",
+    "mobility_aid": "unknown"
+  },
+  "notes": "户外白天院落/门前水泥地面。人物未注意身后的台阶，脚步落空后失去平衡并跌倒；附近椅子随动作倾倒。事件时间依据视频分析估计，建议人工逐帧复核。",
+  "resolution": "720x640",
+  "fps": 30.315,
+  "duration_s": 19.56
+}
