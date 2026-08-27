@@ -46,10 +46,9 @@ class MockRuntime:
             level = "yellow"
 
         factors = [
-            {"key": "gait_unsteady", "label": "步态不稳", "value": round(min(1.0, texture * 6 + self.rng.random() * 0.3), 2), "unit": "", "normal_range": "0-0.3"},
-            {"key": "moving_speed", "label": "移动速度", "value": round(self.rng.random() * 0.6, 2), "unit": "", "normal_range": "0-1"},
-            {"key": "inactivity", "label": "长时间静止", "value": round(self.rng.random() * 0.4, 2), "unit": "", "normal_range": "0-0.4"},
-            {"key": "posture_stability", "label": "姿态稳定性", "value": round(1.0 - min(1.0, texture * 4), 2), "unit": "", "normal_range": "0.7-1"},
+            {"key": "body_lean", "label": "躯干倾斜", "value": round(min(1.0, texture * 6 + self.rng.random() * 0.3), 2), "unit": "", "normal_range": "0-0.4"},
+            {"key": "support_base", "label": "支撑面不稳", "value": round(min(1.0, texture * 4), 2), "unit": "", "normal_range": "0-0.3"},
+            {"key": "posture_height", "label": "姿态高度异常", "value": round(min(1.0, self.rng.random() * 0.4), 2), "unit": "", "normal_range": "0-0.3"},
         ]
 
         return {

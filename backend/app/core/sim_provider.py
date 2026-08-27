@@ -118,10 +118,9 @@ class SimCamera:
             risk_score = 0.25
 
         factors = [
-            {"key": "gait_unsteady", "label": "步态不稳", "value": round(0.9 if self.state in ("unsteady", "falling") else self.rng.random() * 0.2, 2), "unit": "", "normal_range": "0-0.3"},
-            {"key": "moving_speed", "label": "移动速度", "value": round(0.2 + self.rng.random() * 0.5, 2), "unit": "", "normal_range": "0-1"},
-            {"key": "inactivity", "label": "长时间静止", "value": round(0.7 if self.state == "idle" else 0.05, 2), "unit": "", "normal_range": "0-0.4"},
-            {"key": "posture_stability", "label": "姿态稳定性", "value": round(0.1 if self.state in ("unsteady", "falling") else 0.9, 2), "unit": "", "normal_range": "0.7-1"},
+            {"key": "body_lean", "label": "躯干倾斜", "value": round(0.9 if self.state in ("unsteady", "falling") else 0.1, 2), "unit": "", "normal_range": "0-0.4"},
+            {"key": "support_base", "label": "支撑面不稳", "value": round(0.8 if self.state in ("unsteady", "falling") else 0.15, 2), "unit": "", "normal_range": "0-0.3"},
+            {"key": "posture_height", "label": "姿态高度异常", "value": round(0.9 if self.state in ("falling", "fallen") else 0.1, 2), "unit": "", "normal_range": "0-0.3"},
         ]
         return {
             "state": self.state,

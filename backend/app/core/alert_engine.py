@@ -8,7 +8,7 @@ from datetime import datetime
 from loguru import logger
 from sqlalchemy.orm import Session
 
-from app.core.risk_engine import RiskEngine, level_of
+from app.core.risk_engine import RiskEngine
 from app.models.entities import AlertEvent, AlertLevel, Device, FallEvent, NotificationLog, Resident, RiskScore
 
 
@@ -27,18 +27,19 @@ class AlertEngine:
         resident_id = device.resident_id
         subject_key = f"r{resident_id or 0}:d{device.id}"
 
-        score = self.risk_engine.push_and_score(subject_key, infer.risk_score)
+        result = self.risk_engine.score(subject_key, device.scene, infer, frame_at)
+        score = result.score
         fall = bool(infer.fall_detected)
-        level: AlertLevel = level_of(score, fall)
+        level: AlertLevel = result.level
 
-        # 记录风险评分（rt 风险档案）
+        # 记录风险评分（风险档案）
         if score >= 0.20 or fall:
             db.add(RiskScore(
                 resident_id=resident_id,
                 device_id=device.id,
                 score=score,
                 level=level,
-                factors_json=self.risk_engine.factors_json(infer),
+                factors_json=self.risk_engine.factors_json(result.factors),
                 created_at=datetime.now(),
             ))
 
@@ -56,13 +57,23 @@ class AlertEngine:
 
         if should_emit and (frame_at - self._last_emit_ts.get(device.id, 0)) >= self.emit_cooldown_seconds:
             self._last_emit_ts[device.id] = frame_at
-            broadcast = self._emit(db, device, resident_id, level, score, infer)
+            broadcast = self._emit(db, device, resident_id, level, score, infer, result.factors, result.events)
             self._counters[device.id] = 0
 
         db.commit()
         return broadcast
 
-    def _emit(self, db: Session, device: Device, resident_id: int | None, level: AlertLevel, score: float, infer) -> dict:
+    def _emit(
+        self,
+        db: Session,
+        device: Device,
+        resident_id: int | None,
+        level: AlertLevel,
+        score: float,
+        infer,
+        factors: list[dict],
+        events: list[str],
+    ) -> dict:
         now = datetime.now()
         event_type = "fall_event" if infer.fall_detected else ("fall_risk" if score >= 0.55 else "behavior_risk")
         if infer.fall_detected:
@@ -85,7 +96,8 @@ class AlertEngine:
                 "score": score,
                 "fall_prob": infer.fall_prob,
                 "fall_type": infer.fall_type,
-                "factors": [f.model_dump() for f in infer.risk_factors],
+                "factors": factors,
+                "events": events,
                 "mock": infer.mock,
             }, ensure_ascii=False),
             confirmed=False,

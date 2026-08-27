@@ -17,3 +17,5 @@ logs/
 !ai-engine/models/*.pt
 *.onnx
 *.pth
+*.npz
+ai-engine/runs/

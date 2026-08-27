@@ -94,19 +94,31 @@ class RealRuntime:
 
     def _risk_factors(self, kpts: np.ndarray, frame_shape: tuple, fall_prob: float) -> list[dict]:
         h, w = frame_shape[:2]
-        shoulder_x = float((kpts[5, 0] + kpts[6, 0]) / 2)
-        shoulder_y = float((kpts[5, 1] + kpts[6, 1]) / 2)
-        hip_x = float((kpts[11, 0] + kpts[12, 0]) / 2)
-        hip_y = float((kpts[11, 1] + kpts[12, 1]) / 2)
-        ankle_y = float((kpts[15, 1] + kpts[16, 1]) / 2)
-        hip_ratio = max(0.0, min(1.0, (h - hip_y) / max(h, 1e-6)))
-        body_h = max(abs(hip_y - shoulder_y), 1e-6)
-        lean = abs(hip_x - shoulder_x) / body_h
+        conf = kpts[:, 2]
+
+        def mid(i: int, j: int) -> np.ndarray:
+            return np.array([(kpts[i, 0] + kpts[j, 0]) / 2.0, (kpts[i, 1] + kpts[j, 1]) / 2.0])
+
+        shoulder = mid(5, 6)
+        hip = mid(11, 12)
+        torso = float(np.linalg.norm(shoulder - hip)) or 1e-6
+
+        lean = abs(float(hip[0] - shoulder[0])) / torso
+        body_lean = round(min(1.0, lean), 2)
+
+        if conf[15] >= 0.3 and conf[16] >= 0.3:
+            ankle_sep = abs(float(kpts[15, 0] - kpts[16, 0]))
+            support_base = round(min(1.0, max(0.0, 1.0 - ankle_sep / (0.8 * torso))), 2)
+        else:
+            support_base = 0.5
+
+        hip_ratio = max(0.0, min(1.0, (h - float(hip[1])) / max(h, 1e-6)))
+        posture_height = round(min(1.0, max(0.0, (0.40 - hip_ratio) / 0.40)), 2)
+
         return [
-            {"key": "gait_unsteady", "label": "步态不稳", "value": round(min(1.0, max(0.0, (lean - 0.55) * 2.5)), 2), "unit": "", "normal_range": "0-0.3"},
-            {"key": "moving_speed", "label": "移动速度", "value": round(max(0.0, 0.6 - abs(hip_y - ankle_y) / max(h, 1e-6)), 2), "unit": "", "normal_range": "0-1"},
-            {"key": "inactivity", "label": "长时间静止", "value": 0.1, "unit": "", "normal_range": "0-0.4"},
-            {"key": "posture_stability", "label": "姿态稳定性", "value": round(max(0.0, min(1.0, 1.0 - lean)), 2), "unit": "", "normal_range": "0.7-1"},
+            {"key": "body_lean", "label": "躯干倾斜", "value": body_lean, "unit": "", "normal_range": "0-0.4"},
+            {"key": "support_base", "label": "支撑面不稳", "value": support_base, "unit": "", "normal_range": "0-0.3"},
+            {"key": "posture_height", "label": "姿态高度异常", "value": posture_height, "unit": "", "normal_range": "0-0.3"},
         ]
 
     def _empty_result(self) -> dict:

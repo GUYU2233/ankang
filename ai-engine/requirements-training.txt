@@ -1,0 +1,8 @@
+# 训练/真实推理依赖（接入数据集后安装）
+torch>=2.0
+ultralytics>=8.2
+onnx>=1.16
+onnxruntime>=1.18
+matplotlib>=3.8
+numpy>=1.26
+opencv-python-headless>=4.9
