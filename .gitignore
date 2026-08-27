@@ -19,3 +19,4 @@ logs/
 *.pth
 *.npz
 ai-engine/runs/
+data/
