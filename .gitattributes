@@ -1,0 +1,4 @@
+data/videos/**/*.mp4 filter=lfs diff=lfs merge=lfs -text
+data/videos/**/*.avi filter=lfs diff=lfs merge=lfs -text
+data/videos/**/*.mkv filter=lfs diff=lfs merge=lfs -text
+ai-engine/models/*.pt filter=lfs diff=lfs merge=lfs -text

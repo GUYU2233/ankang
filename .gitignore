@@ -8,12 +8,12 @@ dist/
 .env
 *.db
 *.sqlite3
-data/
 runtime/
 .idea/
 .vscode/
 *.log
 logs/
 *.pt
+!ai-engine/models/*.pt
 *.onnx
 *.pth

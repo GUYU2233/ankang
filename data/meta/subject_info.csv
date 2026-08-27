@@ -1,0 +1,3 @@
+subject_id,age_group,gender,mobility_aid,source_dataset,note
+unknown,unknown,unknown,unknown,URFD,"Official files do not publish subject demographics; actors are simulated (typically young), not elderly patients."
+unknown,unknown,unknown,unknown,Le2i,"Official files do not publish subject demographics; actors are simulated (typically young), not elderly patients."
