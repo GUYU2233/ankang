@@ -86,7 +86,7 @@ class RealRuntime:
         body_height = abs(hip_y - shoulder_y) + 1e-6
         lean = abs(hip_x - shoulder_x) / body_height
         fall_prob = 0.0
-        if hip_height_ratio < 0.18 or (hip_y - ankle_y) < body_height * 0.6:
+        if hip_height_ratio < 0.18 or (ankle_y - hip_y) < body_height * 0.6:
             fall_prob = 0.8
         else:
             fall_prob = min(0.6, max(0.0, (lean - 0.8) * 2.0))
