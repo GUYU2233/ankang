@@ -126,6 +126,8 @@ class SimCamera:
             "state": self.state,
             "fall_detected": fall_now,
             "risk_score": round(risk_score, 2),
+            "nearfall_prob": 0.68 if self.state == "unsteady" else (0.25 if self.state == "falling" else 0.0),
+            "gait_unsteadiness": 0.82 if self.state == "unsteady" else (0.45 if self.state == "falling" else 0.12),
             "risk_factors": factors,
             "person_count": 1 if self.state != "fallen" else 1,
         }

@@ -18,6 +18,8 @@ _URFD_SEQ = re.compile(r"(fall|adl)-([0-9]+)", re.IGNORECASE)
 
 ACTION_TO_BINARY = {"fall": 1, "nearfall": 0, "normal": 0, "risk_behavior": 0}
 ACTION_TO_TERNARY = {"fall": 0, "nearfall": 1, "normal": 2, "risk_behavior": 2}
+# 4 类：风险行为不再并入 normal / non_fall。
+ACTION_TO_MULTICLASS = {"fall": 0, "nearfall": 1, "risk_behavior": 2, "normal": 3}
 
 
 def load_csv(path: Path) -> list[dict]:
@@ -83,12 +85,16 @@ def label_from_row(row: dict, mode: str = "binary") -> int:
     action = (row.get("action_label") or "normal").strip().lower()
     if mode == "ternary":
         return ACTION_TO_TERNARY.get(action, 2)
+    if mode == "multiclass":
+        return ACTION_TO_MULTICLASS.get(action, 3)
     return ACTION_TO_BINARY.get(action, 0)
 
 
 def label_names(mode: str = "binary") -> list[str]:
     if mode == "ternary":
         return ["fall", "nearfall", "normal"]
+    if mode == "multiclass":
+        return ["fall", "nearfall", "risk_behavior", "normal"]
     return ["non_fall", "fall"]
 
 

@@ -1,0 +1,31 @@
+{
+  "video": "livingroom_risk_behavior_gait23_20260828.mp4",
+  "scene": "livingroom",
+  "action_label": "risk_behavior",
+  "event_type": "stagger",
+  "fall_start_ts": null,
+  "fall_end_ts": null,
+  "person_bbox": null,
+  "lighting": "unknown",
+  "occlusion": "unknown",
+  "people_count": "1p",
+  "subject": {
+    "subject_id": "unknown",
+    "age_group": "adult",
+    "gender": "unknown",
+    "mobility_aid": "none"
+  },
+  "notes": "source=YouTube web; yt-dlp_id=7XGxcwPNpeU; url=https://www.youtube.com/watch?v=7XGxcwPNpeU; title=Ataxia/Cerebellar Gait; clip_window_s=22.0-57.0; approx, web source, not frame-accurate; person_bbox not invented; Ataxia/cerebellar gait educational clip after title card; unsteady staggering walk.",
+  "source_dataset": "WebVideo",
+  "source_file": "https://www.youtube.com/watch?v=7XGxcwPNpeU",
+  "source_id": "7XGxcwPNpeU",
+  "source_title": "Ataxia/Cerebellar Gait",
+  "camera": "unknown",
+  "camera_angle": "side",
+  "resolution": "1280x720",
+  "fps": 23.976023976023978,
+  "duration_s": 35.035,
+  "sensor_file": null,
+  "clip_start_s": 22.0,
+  "clip_end_s": 57.0
+}

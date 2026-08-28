@@ -1,0 +1,31 @@
+{
+  "video": "livingroom_risk_behavior_gait34_20260828.mp4",
+  "scene": "livingroom",
+  "action_label": "risk_behavior",
+  "event_type": "slow_stand",
+  "fall_start_ts": null,
+  "fall_end_ts": null,
+  "person_bbox": null,
+  "lighting": "day",
+  "occlusion": "unknown",
+  "people_count": "1p",
+  "subject": {
+    "subject_id": "unknown",
+    "age_group": "adult",
+    "gender": "male",
+    "mobility_aid": "none"
+  },
+  "notes": "source=YouTube web; yt-dlp_id=PzCTwkJVhWg; url=https://www.youtube.com/watch?v=PzCTwkJVhWg; title=30 Second Sit to Stand Test; clip_window_s=22.0-60.0; approx, web source, not frame-accurate; person_bbox not invented; Educated PT 30-second sit-to-stand; indoor chair rise demonstration. Actor young.",
+  "source_dataset": "WebVideo",
+  "source_file": "https://www.youtube.com/watch?v=PzCTwkJVhWg",
+  "source_id": "PzCTwkJVhWg",
+  "source_title": "30 Second Sit to Stand Test",
+  "camera": "unknown",
+  "camera_angle": "side",
+  "resolution": "1280x720",
+  "fps": 30.0,
+  "duration_s": 38.0,
+  "sensor_file": null,
+  "clip_start_s": 22.0,
+  "clip_end_s": 60.0
+}

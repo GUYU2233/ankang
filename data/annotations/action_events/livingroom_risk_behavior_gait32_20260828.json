@@ -1,0 +1,31 @@
+{
+  "video": "livingroom_risk_behavior_gait32_20260828.mp4",
+  "scene": "livingroom",
+  "action_label": "risk_behavior",
+  "event_type": "slow_stand",
+  "fall_start_ts": null,
+  "fall_end_ts": null,
+  "person_bbox": null,
+  "lighting": "day",
+  "occlusion": "unknown",
+  "people_count": "1p",
+  "subject": {
+    "subject_id": "unknown",
+    "age_group": "adult",
+    "gender": "female",
+    "mobility_aid": "none"
+  },
+  "notes": "source=YouTube web; yt-dlp_id=5yxfzyzEzBY; url=https://www.youtube.com/watch?v=5yxfzyzEzBY; title=Sit to stand with progression; clip_window_s=12.0-50.0; approx, web source, not frame-accurate; person_bbox not invented; Royal Free NHS: sit-to-stand with progression; clinic chair rise. Actor not elderly.",
+  "source_dataset": "WebVideo",
+  "source_file": "https://www.youtube.com/watch?v=5yxfzyzEzBY",
+  "source_id": "5yxfzyzEzBY",
+  "source_title": "Sit to stand with progression",
+  "camera": "unknown",
+  "camera_angle": "side",
+  "resolution": "1280x720",
+  "fps": 29.97002997002997,
+  "duration_s": 38.004633,
+  "sensor_file": null,
+  "clip_start_s": 12.0,
+  "clip_end_s": 50.0
+}

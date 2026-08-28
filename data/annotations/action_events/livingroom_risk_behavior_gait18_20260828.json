@@ -1,0 +1,31 @@
+{
+  "video": "livingroom_risk_behavior_gait18_20260828.mp4",
+  "scene": "livingroom",
+  "action_label": "risk_behavior",
+  "event_type": "stagger",
+  "fall_start_ts": null,
+  "fall_end_ts": null,
+  "person_bbox": null,
+  "lighting": "unknown",
+  "occlusion": "unknown",
+  "people_count": "1p",
+  "subject": {
+    "subject_id": "unknown",
+    "age_group": "adult",
+    "gender": "male",
+    "mobility_aid": "none"
+  },
+  "notes": "source=YouTube web; yt-dlp_id=FpiEprzObIU; url=https://www.youtube.com/watch?v=FpiEprzObIU; title=Abnormal Gait Exam : Ataxic Gait Demonstration; clip_window_s=12.0-50.0; approx, web source, not frame-accurate; person_bbox not invented; Abnormal Gait Exam ataxic gait demonstration; wide-based irregular staggering steps. Studio.",
+  "source_dataset": "WebVideo",
+  "source_file": "https://www.youtube.com/watch?v=FpiEprzObIU",
+  "source_id": "FpiEprzObIU",
+  "source_title": "Abnormal Gait Exam : Ataxic Gait Demonstration",
+  "camera": "unknown",
+  "camera_angle": "side",
+  "resolution": "800x480",
+  "fps": 29.97002997002997,
+  "duration_s": 38.004633,
+  "sensor_file": null,
+  "clip_start_s": 12.0,
+  "clip_end_s": 50.0
+}

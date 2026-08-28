@@ -1,0 +1,31 @@
+{
+  "video": "livingroom_risk_behavior_gait11_20260828.mp4",
+  "scene": "livingroom",
+  "action_label": "risk_behavior",
+  "event_type": "unstable_gait",
+  "fall_start_ts": null,
+  "fall_end_ts": null,
+  "person_bbox": null,
+  "lighting": "day",
+  "occlusion": "unknown",
+  "people_count": "1p",
+  "subject": {
+    "subject_id": "unknown",
+    "age_group": "adult",
+    "gender": "male",
+    "mobility_aid": "none"
+  },
+  "notes": "source=YouTube web; yt-dlp_id=W-S8Pk63YRE; url=https://www.youtube.com/watch?v=W-S8Pk63YRE; title=Antalgic Gait Demonstration; clip_window_s=5.0-44.0; approx, web source, not frame-accurate; person_bbox not invented; Antalgic gait demonstration (Med School Made Easy); shortened stance on painful side.",
+  "source_dataset": "WebVideo",
+  "source_file": "https://www.youtube.com/watch?v=W-S8Pk63YRE",
+  "source_id": "W-S8Pk63YRE",
+  "source_title": "Antalgic Gait Demonstration",
+  "camera": "unknown",
+  "camera_angle": "side",
+  "resolution": "1280x720",
+  "fps": 29.97002997002997,
+  "duration_s": 39.005633,
+  "sensor_file": null,
+  "clip_start_s": 5.0,
+  "clip_end_s": 44.0
+}

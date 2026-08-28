@@ -32,10 +32,15 @@ class MockRuntime:
             fall_prob = 0.75 + self.rng.random() * 0.2
             risk_score = 0.85 + self.rng.random() * 0.1
             fall_type = self.rng.choice(["forward_fall", "slip_fall", "fall_from_bed"])
+            nearfall_prob = round(0.10 + self.rng.random() * 0.15, 3)
+            gait_unsteadiness = round(0.40 + self.rng.random() * 0.25, 3)
         else:
             fall_prob = round(self.rng.random() * 0.2, 3)
             base = 0.25 + 0.25 * (1 - brightness) + 0.3 * texture
             risk_score = round(min(0.9, base + self.rng.random() * 0.25), 3)
+            fall_type = ""
+            nearfall_prob = round(min(0.8, risk_score * 0.55 + self.rng.random() * 0.15), 3) if risk_score > 0.4 else round(self.rng.random() * 0.12, 3)
+            gait_unsteadiness = round(min(1.0, texture * 5 + self.rng.random() * 0.2), 3)
 
         level = "green"
         if fall_detected or risk_score >= 0.85:
@@ -55,6 +60,8 @@ class MockRuntime:
             "person_count": person_count,
             "fall_detected": fall_detected,
             "fall_prob": round(fall_prob, 3),
+            "nearfall_prob": nearfall_prob,
+            "gait_unsteadiness": gait_unsteadiness,
             "fall_type": fall_type,
             "risk_factors": factors,
             "risk_score": risk_score,

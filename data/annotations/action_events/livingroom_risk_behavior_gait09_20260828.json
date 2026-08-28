@@ -1,0 +1,31 @@
+{
+  "video": "livingroom_risk_behavior_gait09_20260828.mp4",
+  "scene": "livingroom",
+  "action_label": "risk_behavior",
+  "event_type": "unstable_gait",
+  "fall_start_ts": null,
+  "fall_end_ts": null,
+  "person_bbox": null,
+  "lighting": "unknown",
+  "occlusion": "unknown",
+  "people_count": "1p",
+  "subject": {
+    "subject_id": "unknown",
+    "age_group": "adult",
+    "gender": "male",
+    "mobility_aid": "none"
+  },
+  "notes": "source=YouTube web; yt-dlp_id=y160w4sAQNw; url=https://www.youtube.com/watch?v=y160w4sAQNw; title=Abnormal Gait Exam : Hemiplegic Gait Demonstration; clip_window_s=8.0-46.0; approx, web source, not frame-accurate; person_bbox not invented; Abnormal Gait Exam hemiplegic gait demonstration; circumducted stiff-leg walk. Studio.",
+  "source_dataset": "WebVideo",
+  "source_file": "https://www.youtube.com/watch?v=y160w4sAQNw",
+  "source_id": "y160w4sAQNw",
+  "source_title": "Abnormal Gait Exam : Hemiplegic Gait Demonstration",
+  "camera": "unknown",
+  "camera_angle": "side",
+  "resolution": "800x480",
+  "fps": 29.97002997002997,
+  "duration_s": 38.004633,
+  "sensor_file": null,
+  "clip_start_s": 8.0,
+  "clip_end_s": 46.0
+}

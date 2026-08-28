@@ -1,0 +1,31 @@
+{
+  "video": "livingroom_risk_behavior_gait20_20260828.mp4",
+  "scene": "livingroom",
+  "action_label": "risk_behavior",
+  "event_type": "stagger",
+  "fall_start_ts": null,
+  "fall_end_ts": null,
+  "person_bbox": null,
+  "lighting": "day",
+  "occlusion": "unknown",
+  "people_count": "1p",
+  "subject": {
+    "subject_id": "unknown",
+    "age_group": "adult",
+    "gender": "male",
+    "mobility_aid": "none"
+  },
+  "notes": "source=YouTube web; yt-dlp_id=yhgUOY2ohUE; url=https://www.youtube.com/watch?v=yhgUOY2ohUE; title=Ataxic Gait (Dr. Yehia Mishriki); clip_window_s=0.0-14.0; approx, web source, not frame-accurate; person_bbox not invented; Ataxic gait (Dr. Yehia Mishriki); short staggering-walk clip.",
+  "source_dataset": "WebVideo",
+  "source_file": "https://www.youtube.com/watch?v=yhgUOY2ohUE",
+  "source_id": "yhgUOY2ohUE",
+  "source_title": "Ataxic Gait (Dr. Yehia Mishriki)",
+  "camera": "unknown",
+  "camera_angle": "side",
+  "resolution": "1280x720",
+  "fps": 30.0,
+  "duration_s": 13.966667,
+  "sensor_file": null,
+  "clip_start_s": 0.0,
+  "clip_end_s": 14.0
+}

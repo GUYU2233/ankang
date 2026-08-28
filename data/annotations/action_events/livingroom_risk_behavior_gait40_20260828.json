@@ -1,0 +1,31 @@
+{
+  "video": "livingroom_risk_behavior_gait40_20260828.mp4",
+  "scene": "livingroom",
+  "action_label": "risk_behavior",
+  "event_type": "repeated_stand",
+  "fall_start_ts": null,
+  "fall_end_ts": null,
+  "person_bbox": null,
+  "lighting": "day",
+  "occlusion": "unknown",
+  "people_count": "1p",
+  "subject": {
+    "subject_id": "unknown",
+    "age_group": "adult",
+    "gender": "male",
+    "mobility_aid": "none"
+  },
+  "notes": "source=YouTube web; yt-dlp_id=g9DnQzjplLI; url=https://www.youtube.com/watch?v=g9DnQzjplLI; title=5 times Sit-to-Stand instructions and demonstration; clip_window_s=40.0-70.0; approx, web source, not frame-accurate; person_bbox not invented; Pitt PT 5 times sit-to-stand instructions then demonstration; arms crossed.",
+  "source_dataset": "WebVideo",
+  "source_file": "https://www.youtube.com/watch?v=g9DnQzjplLI",
+  "source_id": "g9DnQzjplLI",
+  "source_title": "5 times Sit-to-Stand instructions and demonstration",
+  "camera": "unknown",
+  "camera_angle": "side",
+  "resolution": "640x480",
+  "fps": 29.97002997002997,
+  "duration_s": 30.03,
+  "sensor_file": null,
+  "clip_start_s": 40.0,
+  "clip_end_s": 70.0
+}

@@ -38,6 +38,10 @@ def test_risk_behavior_maps_nonfall() -> None:
     assert label_from_row({"action_label": "fall"}, "binary") == 1
     assert label_from_row({"action_label": "nearfall"}, "binary") == 0
     assert label_from_row({"action_label": "risk_behavior"}, "ternary") == 2
+    assert label_from_row({"action_label": "fall"}, "multiclass") == 0
+    assert label_from_row({"action_label": "nearfall"}, "multiclass") == 1
+    assert label_from_row({"action_label": "risk_behavior"}, "multiclass") == 2
+    assert label_from_row({"action_label": "normal"}, "multiclass") == 3
     print("  label mapping OK")
 
 

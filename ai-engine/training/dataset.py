@@ -54,7 +54,7 @@ def load_clip(row: dict, cfg: DataConfig) -> dict | None:
         return None
     return {
         "keypoints": kpts,
-        "label": label_from_row(row, "binary"),
+        "label": label_from_row(row, "binary"),  # overwritten in build_dataset
         "video": str(row["video_path"]),
         "subject": row.get("_subject_key", "unknown"),
         "action_label": row.get("action_label", "normal"),
@@ -109,7 +109,6 @@ def build_dataset(
     for row in rows:
         clip = load_clip(row, cfg)
         if clip is not None:
-            if classes == "ternary":
-                clip["label"] = label_from_row(row, "ternary")
+            clip["label"] = label_from_row(row, classes)
             clips.append(clip)
     return SkeletonSequenceDataset(clips, cfg.window_len, cfg.window_stride, cfg.keypoint_conf_thr, classes)

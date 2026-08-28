@@ -1,0 +1,31 @@
+{
+  "video": "livingroom_risk_behavior_gait02_20260828.mp4",
+  "scene": "livingroom",
+  "action_label": "risk_behavior",
+  "event_type": "unstable_gait",
+  "fall_start_ts": null,
+  "fall_end_ts": null,
+  "person_bbox": null,
+  "lighting": "day",
+  "occlusion": "unknown",
+  "people_count": "1p",
+  "subject": {
+    "subject_id": "unknown",
+    "age_group": "elderly",
+    "gender": "male",
+    "mobility_aid": "none"
+  },
+  "notes": "source=YouTube web; yt-dlp_id=EQ0HG16EC3g; url=https://www.youtube.com/watch?v=EQ0HG16EC3g; title=Parkinson's Disease Freezing & Festinating Gait; clip_window_s=0.0-19.0; approx, web source, not frame-accurate; person_bbox not invented; Mission Gait: elderly man Parkinson's freezing and festinating gait indoor clinic floor with cone cue.",
+  "source_dataset": "WebVideo",
+  "source_file": "https://www.youtube.com/watch?v=EQ0HG16EC3g",
+  "source_id": "EQ0HG16EC3g",
+  "source_title": "Parkinson's Disease Freezing & Festinating Gait",
+  "camera": "unknown",
+  "camera_angle": "wide",
+  "resolution": "1280x720",
+  "fps": 23.976023976023978,
+  "duration_s": 19.019,
+  "sensor_file": null,
+  "clip_start_s": 0.0,
+  "clip_end_s": 19.0
+}

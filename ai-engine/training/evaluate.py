@@ -63,7 +63,7 @@ def main() -> None:
     )
     rows = load_manifest(data_cfg.manifest)
     annotate_subject_keys(rows, load_source_mapping(data_cfg.source_mapping))
-    rows = [r for r in rows if r.get("action_label", "normal") in ("fall", "nearfall", "normal")
+    rows = [r for r in rows if r.get("action_label", "normal") in ("fall", "nearfall", "normal", "risk_behavior")
             and (data_cfg.data_root / r["video_path"]).exists()]
     _, val_rows = split_by_subject(rows, args.val_split, args.seed, classes)
 

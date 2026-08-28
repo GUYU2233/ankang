@@ -44,5 +44,5 @@ class TrainConfig:
     num_workers: int = 0
     output_dir: Path = Path("ai-engine/runs")
     class_weight: bool = True
-    classes: str = "binary"  # binary / ternary
+    classes: str = "binary"  # binary / ternary / multiclass
     max_clips: int = 0  # 0 = all clips (方便冒烟测试)

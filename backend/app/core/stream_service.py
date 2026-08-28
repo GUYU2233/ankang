@@ -91,6 +91,8 @@ class StreamService:
             person_count=meta.get("person_count", 1),
             fall_detected=bool(meta.get("fall_detected")),
             fall_prob=float(meta.get("risk_score") or 0.0),
+            nearfall_prob=float(meta.get("nearfall_prob") or 0.0),
+            gait_unsteadiness=float(meta.get("gait_unsteadiness") or 0.0),
             fall_type="sim_fall" if meta.get("fall_detected") else "",
             risk_factors=meta.get("risk_factors", []),
             risk_score=float(meta.get("risk_score") or 0.0),

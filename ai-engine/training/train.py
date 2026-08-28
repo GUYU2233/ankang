@@ -3,6 +3,7 @@
 用法（在 ai-engine/ 目录下）：
     python -m training.train --model tcn --epochs 30 --max-clips 0
     python -m training.train --model stgcn --classes ternary
+    python -m training.train --model prefall --classes multiclass
 """
 from __future__ import annotations
 
@@ -153,8 +154,8 @@ def save_confusion_png(cm: np.ndarray, class_names: list[str], path: Path) -> No
 
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--model", choices=["tcn", "stgcn"], default="tcn")
-    ap.add_argument("--classes", choices=["binary", "ternary"], default="binary")
+    ap.add_argument("--model", choices=["tcn", "stgcn", "prefall"], default="tcn")
+    ap.add_argument("--classes", choices=["binary", "ternary", "multiclass"], default="binary")
     ap.add_argument("--epochs", type=int, default=60)
     ap.add_argument("--batch-size", type=int, default=32)
     ap.add_argument("--lr", type=float, default=1e-3)
@@ -188,7 +189,9 @@ def main() -> None:
         window_stride=args.window_stride,
         device=device,
     )
-    num_classes = 3 if args.classes == "ternary" else 2
+    if args.model == "prefall":
+        args.classes = "multiclass"
+    num_classes = {"binary": 2, "ternary": 3, "multiclass": 4}[args.classes]
     model_cfg = ModelConfig(name=args.model, num_classes=num_classes, in_channels=3, num_joints=17)
     train_cfg = TrainConfig(
         epochs=args.epochs,

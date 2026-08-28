@@ -143,7 +143,47 @@ class STGCN(nn.Module):
         return self.head(self.layers(x))
 
 
+class PrefallRiskHead(nn.Module):
+    """可训练的前置风险头：4 类 logits (fall / nearfall / risk_behavior / normal)。
+
+    当前在线推理仍使用启发式 HeuristicPoseRiskHead；本模块作为训练接口。
+    导出 ONNX 后可替换 ai-engine/app/pipelines/prefall_head.py。
+    输入 (N, C, T, V)，输出 (N, 4)。
+    """
+
+    def __init__(
+        self,
+        in_dim: int = 3,
+        num_joints: int = 17,
+        hidden: int = 128,
+        layers: int = 4,
+        dropout: float = 0.3,
+        num_classes: int = 4,
+    ) -> None:
+        super().__init__()
+        self.backbone = TCN(
+            in_dim=in_dim,
+            num_joints=num_joints,
+            num_classes=num_classes,
+            hidden=hidden,
+            layers=layers,
+            dropout=dropout,
+        )
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        return self.backbone(x)
+
+
 def build_model(cfg: ModelConfig) -> nn.Module:
+    if cfg.name == "prefall":
+        return PrefallRiskHead(
+            in_dim=cfg.in_channels,
+            num_joints=cfg.num_joints,
+            hidden=cfg.hidden,
+            layers=max(4, cfg.tcn_layers - 2),
+            dropout=cfg.dropout,
+            num_classes=cfg.num_classes,
+        )
     if cfg.name == "stgcn":
         return STGCN(
             in_dim=cfg.in_channels,

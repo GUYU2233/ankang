@@ -57,7 +57,7 @@ class AlertEngine:
 
         if should_emit and (frame_at - self._last_emit_ts.get(device.id, 0)) >= self.emit_cooldown_seconds:
             self._last_emit_ts[device.id] = frame_at
-            broadcast = self._emit(db, device, resident_id, level, score, infer, result.factors, result.events)
+            broadcast = self._emit(db, device, resident_id, level, score, infer, result.factors, result.events, result.trigger_reason)
             self._counters[device.id] = 0
 
         db.commit()
@@ -73,6 +73,7 @@ class AlertEngine:
         infer,
         factors: list[dict],
         events: list[str],
+        trigger_reason: str = "",
     ) -> dict:
         now = datetime.now()
         event_type = "fall_event" if infer.fall_detected else ("fall_risk" if score >= 0.55 else "behavior_risk")
@@ -95,9 +96,12 @@ class AlertEngine:
             detail_json=json.dumps({
                 "score": score,
                 "fall_prob": infer.fall_prob,
+                "nearfall_prob": getattr(infer, "nearfall_prob", 0.0),
+                "gait_unsteadiness": getattr(infer, "gait_unsteadiness", 0.0),
                 "fall_type": infer.fall_type,
                 "factors": factors,
                 "events": events,
+                "trigger_reason": trigger_reason,
                 "mock": infer.mock,
             }, ensure_ascii=False),
             confirmed=False,
@@ -134,5 +138,7 @@ class AlertEngine:
             "resident_name": resident.name if resident else "",
             "score": score,
             "fall_prob": infer.fall_prob,
+            "nearfall_prob": getattr(infer, "nearfall_prob", 0.0),
+            "trigger_reason": trigger_reason,
             "created_at": now.isoformat(),
         }

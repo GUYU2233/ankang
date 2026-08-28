@@ -1,0 +1,31 @@
+{
+  "video": "livingroom_risk_behavior_gait29_20260828.mp4",
+  "scene": "livingroom",
+  "action_label": "risk_behavior",
+  "event_type": "slow_stand",
+  "fall_start_ts": null,
+  "fall_end_ts": null,
+  "person_bbox": null,
+  "lighting": "day",
+  "occlusion": "unknown",
+  "people_count": "1p",
+  "subject": {
+    "subject_id": "unknown",
+    "age_group": "elderly",
+    "gender": "male",
+    "mobility_aid": "cane"
+  },
+  "notes": "source=YouTube web; yt-dlp_id=ZF2LyFuoSHw; url=https://www.youtube.com/watch?v=ZF2LyFuoSHw; title='Old man trying to get up from a sofa'; clip_window_s=8.0-44.0; approx, web source, not frame-accurate; person_bbox not invented; Elderly man in living room using cane and sofa for leverage to stand from Chesterfield sofa. Title card trimmed.",
+  "source_dataset": "WebVideo",
+  "source_file": "https://www.youtube.com/watch?v=ZF2LyFuoSHw",
+  "source_id": "ZF2LyFuoSHw",
+  "source_title": "'Old man trying to get up from a sofa'",
+  "camera": "unknown",
+  "camera_angle": "wide",
+  "resolution": "640x360",
+  "fps": 25.0,
+  "duration_s": 36.0,
+  "sensor_file": null,
+  "clip_start_s": 8.0,
+  "clip_end_s": 44.0
+}

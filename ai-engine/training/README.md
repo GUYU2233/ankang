@@ -9,13 +9,14 @@
   稳定键，避免训练/验证泄漏：
   - URFD 的 `fall-01-cam0` 与 `fall-01-cam1` 归入同一 `urfd:fall-01`；
   - Le2i 的每个 `source_file` 作为独立 `le2i:<file>`。
-- `risk_behavior` 在二分类中归入 `non_fall`。
+- `risk_behavior` 在二分类中归入 `non_fall`；`--classes multiclass` 时独立为第 3 类，不再并入 normal。
 - 划分按受试者键分层抽样，默认 80/20。
 
 ## 标签
 
-- `--classes binary`（默认）：`fall=1`，`nearfall/normal/risk_behavior=0`。
-- `--classes ternary`：`fall=0`、`nearfall=1`、`normal=2`。
+- `--classes binary`（默认，现网 ONNX）：`fall=1`，`nearfall/normal/risk_behavior=0`。
+- `--classes ternary`：`fall=0`、`nearfall=1`、`normal=2`（`risk_behavior` 仍并入 normal）。
+- `--classes multiclass`：`fall=0`、`nearfall=1`、`risk_behavior=2`、`normal=3`。在线 2 类 ONNX 暂不重训；近跌概率由启发式 `HeuristicPoseRiskHead` 输出，训练入口为 `--model prefall`。
 
 ## 用法
 
