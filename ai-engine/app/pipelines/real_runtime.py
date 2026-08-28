@@ -150,7 +150,9 @@ class RealRuntime:
             return None
         try:
             from ultralytics.engine.results import Results
-            results: list[Results] = model.predict(frame_bgr, verbose=False, conf=0.35, device=0, half=False)
+            import torch
+            device = 0 if torch.cuda.is_available() else "cpu"
+            results: list[Results] = model.predict(frame_bgr, verbose=False, conf=0.35, device=device, half=False)
         except Exception as exc:
             logger.warning(f"姿态推理失败: {exc}")
             return None
