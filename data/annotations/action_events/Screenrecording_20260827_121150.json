@@ -1,0 +1,21 @@
+{
+  "video": "Screenrecording_20260827_121150.mp4",
+  "scene": "outdoor",
+  "action_label": "fall",
+  "event_type": "syncope_fall",
+  "fall_start_ts": 0.5,
+  "fall_end_ts": 1.5,
+  "person_bbox": null,
+  "lighting": "day",
+  "occlusion": "partial",
+  "subject": {
+    "subject_id": "unknown",
+    "age_group": "unknown",
+    "gender": "unknown",
+    "mobility_aid": "unknown"
+  },
+  "notes": "户外白天城市道路/斑马线场景。人物突然发病晕厥后跌倒，倒地后有路人靠近查看或协助；过程中带着一名路人一同跌倒。视频可能包含同一事件的重复或回放片段，当前时间记录首个事件约0.5–1.5秒，建议人工逐帧复核。",
+  "resolution": "720x454",
+  "fps": 30.09,
+  "duration_s": 105.55
+}

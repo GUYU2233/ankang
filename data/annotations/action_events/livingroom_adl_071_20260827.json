@@ -1,0 +1,29 @@
+{
+  "video": "livingroom_adl_071_20260827.mp4",
+  "scene": "livingroom",
+  "action_label": "normal",
+  "event_type": "walking",
+  "fall_start_ts": null,
+  "fall_end_ts": null,
+  "person_bbox": null,
+  "lighting": "night",
+  "occlusion": "unknown",
+  "subject": {
+    "subject_id": "S_GMDCSA_02",
+    "age_group": "unknown",
+    "gender": "unknown",
+    "mobility_aid": "unknown"
+  },
+  "notes": "source=GMDCSA-24 Subject 2 ADL/19.mp4; source_scene=home (3 environments), mapped to livingroom because no bed/bathroom fixture labeled; actors=simulated (not elderly); demographics unknown in official files; original_resolution=1280x720; lighting from CSV Time of Recording='Night' -> night; official classes='Sitting[1 to 11]; Walking[0 to 0.6]; Writing[5 to 11]'; description='Sitting on the ground and writing in a notebook'; fall_start/end from official CSV class time spans (left blank: no official span for this primary event); license=CC BY 4.0 (Zenodo 10.5281/zenodo.13354453); GitHub copy also MIT",
+  "source_dataset": "GMDCSA-24",
+  "source_file": "Subject 2/ADL/19.mp4",
+  "camera": "laptop_webcam",
+  "camera_angle": "unknown",
+  "resolution": "1280x720",
+  "fps": 15.00520768972761,
+  "duration_s": 11.345271,
+  "sensor_file": null,
+  "source_description": "Sitting on the ground and writing in a notebook",
+  "source_classes": "Sitting[1 to 11]; Walking[0 to 0.6]; Writing[5 to 11]",
+  "time_of_recording": "Night"
+}

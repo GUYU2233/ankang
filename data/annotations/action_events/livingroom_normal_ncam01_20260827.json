@@ -1,0 +1,31 @@
+{
+  "video": "livingroom_normal_ncam01_20260827.mp4",
+  "scene": "livingroom",
+  "action_label": "normal",
+  "event_type": "adl",
+  "fall_start_ts": null,
+  "fall_end_ts": null,
+  "person_bbox": null,
+  "lighting": "unknown",
+  "occlusion": "unknown",
+  "people_count": "1p",
+  "subject": {
+    "subject_id": "unknown",
+    "age_group": "elderly",
+    "gender": "female",
+    "mobility_aid": "none"
+  },
+  "notes": "source=SmartHome-Bench smartbench_1002; url=https://www.youtube.com/watch?v=3-dvsT8pqbQ; people_count=1p; camera_angle=wall_mount; source_id=3-dvsT8pqbQ; clip_window_s=0.0-14.0; elderly person walking kitchen-to-living-room before the trip; 1996 VHS home camera; 640x480 kept; fall timestamps approximate not frame-accurate; person_bbox not invented; paper=https://arxiv.org/abs/2506.12992; repo=https://github.com/Xinyi-0724/SmartHome-Bench-LLM",
+  "source_dataset": "SmartHome-Bench",
+  "source_file": "https://www.youtube.com/watch?v=3-dvsT8pqbQ",
+  "source_id": "3-dvsT8pqbQ",
+  "source_title": "smartbench_1002",
+  "camera": "smart_home",
+  "camera_angle": "wall_mount",
+  "resolution": "640x480",
+  "fps": 29.97002997002997,
+  "duration_s": 14.014,
+  "sensor_file": null,
+  "clip_start_s": 0.0,
+  "clip_end_s": 14.0
+}

@@ -1,0 +1,28 @@
+{
+  "video": "livingroom_fall_w12_20260827.mp4",
+  "scene": "livingroom",
+  "action_label": "fall",
+  "event_type": "fall",
+  "fall_start_ts": 0.3,
+  "fall_end_ts": 7.3,
+  "person_bbox": null,
+  "lighting": "day",
+  "occlusion": "unknown",
+  "subject": {
+    "subject_id": "unknown",
+    "age_group": "unknown",
+    "gender": "unknown",
+    "mobility_aid": "unknown"
+  },
+  "notes": "source=YouTube web; yt-dlp_id=yzvDQ77TjRA; url=https://www.youtube.com/watch?v=yzvDQ77TjRA; title=Vision-based Fall Detection using Pose Estimation - Camera view 1; approx, web source, not frame-accurate; person_bbox not invented; Vision-based fall detection pose-estimation camera view 1; person falls onto mattress in lab. Mattress present but room is lab not a bedroom (desks/tape). Mapped livingroom. Pose overlay.",
+  "source_dataset": "WebVideo",
+  "source_file": "https://www.youtube.com/watch?v=yzvDQ77TjRA",
+  "source_id": "yzvDQ77TjRA",
+  "source_title": "Vision-based Fall Detection using Pose Estimation - Camera view 1",
+  "camera": "unknown",
+  "camera_angle": "wide",
+  "resolution": "1920x1080",
+  "fps": 30.0,
+  "duration_s": 7.5,
+  "sensor_file": null
+}

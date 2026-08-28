@@ -1,0 +1,28 @@
+{
+  "video": "bathroom_normal_w01_20260827.mp4",
+  "scene": "bathroom",
+  "action_label": "normal",
+  "event_type": "adl",
+  "fall_start_ts": null,
+  "fall_end_ts": null,
+  "person_bbox": null,
+  "lighting": "unknown",
+  "occlusion": "unknown",
+  "subject": {
+    "subject_id": "unknown",
+    "age_group": "unknown",
+    "gender": "unknown",
+    "mobility_aid": "unknown"
+  },
+  "notes": "source=YouTube web; yt-dlp_id=pXb66KcrtVQ; url=https://www.youtube.com/watch?v=pXb66KcrtVQ; title=Nursing home's smart restroom and bathroom fall detection demo; approx, web source, not frame-accurate; person_bbox not invented; Same HKSB 3D restroom demo, empty/normal monitoring ('No one yet' / Normal) before fall alert. Toilets and sinks visible.",
+  "source_dataset": "WebVideo",
+  "source_file": "https://www.youtube.com/watch?v=pXb66KcrtVQ",
+  "source_id": "pXb66KcrtVQ",
+  "source_title": "Nursing home's smart restroom and bathroom fall detection demo",
+  "camera": "unknown",
+  "camera_angle": "ceiling",
+  "resolution": "1920x1080",
+  "fps": 29.97002997002997,
+  "duration_s": 12.012,
+  "sensor_file": null
+}

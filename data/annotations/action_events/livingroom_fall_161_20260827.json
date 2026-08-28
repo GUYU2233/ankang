@@ -1,0 +1,29 @@
+{
+  "video": "livingroom_fall_161_20260827.mp4",
+  "scene": "livingroom",
+  "action_label": "fall",
+  "event_type": "left_fall",
+  "fall_start_ts": 1.9,
+  "fall_end_ts": 6.0,
+  "person_bbox": null,
+  "lighting": "day",
+  "occlusion": "unknown",
+  "subject": {
+    "subject_id": "S_GMDCSA_01",
+    "age_group": "unknown",
+    "gender": "unknown",
+    "mobility_aid": "unknown"
+  },
+  "notes": "source=GMDCSA-24 Subject 1 Fall/02.mp4; source_scene=home (3 environments), mapped to livingroom because no bed/bathroom fixture labeled; actors=simulated (not elderly); demographics unknown in official files; original_resolution=1280x720; lighting from CSV Time of Recording='Day (Light On)' -> day; official classes='Falling (SW)[1.9 to 6]; Sitting[0 to 1.9]'; description='Falling from sitting on the chair to the ground. Left side Fall. Full body not visible'; fall_start/end from official CSV class time spans; license=CC BY 4.0 (Zenodo 10.5281/zenodo.13354453); GitHub copy also MIT",
+  "source_dataset": "GMDCSA-24",
+  "source_file": "Subject 1/Fall/02.mp4",
+  "camera": "laptop_webcam",
+  "camera_angle": "unknown",
+  "resolution": "1280x720",
+  "fps": 29.67265876442421,
+  "duration_s": 6.375063,
+  "sensor_file": null,
+  "source_description": "Falling from sitting on the chair to the ground. Left side Fall. Full body not visible",
+  "source_classes": "Falling (SW)[1.9 to 6]; Sitting[0 to 1.9]",
+  "time_of_recording": "Day (Light On)"
+}

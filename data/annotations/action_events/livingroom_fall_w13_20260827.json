@@ -1,0 +1,28 @@
+{
+  "video": "livingroom_fall_w13_20260827.mp4",
+  "scene": "livingroom",
+  "action_label": "fall",
+  "event_type": "fall",
+  "fall_start_ts": 0.3,
+  "fall_end_ts": 21.8,
+  "person_bbox": null,
+  "lighting": "day",
+  "occlusion": "unknown",
+  "subject": {
+    "subject_id": "unknown",
+    "age_group": "unknown",
+    "gender": "unknown",
+    "mobility_aid": "unknown"
+  },
+  "notes": "source=YouTube web; yt-dlp_id=HrSdjP7pRuY; url=https://www.youtube.com/watch?v=HrSdjP7pRuY; title=AI Vision System for Fall and Falling Detection in Elderly Care and Safety Monitoring; approx, web source, not frame-accurate; person_bbox not invented; WG Tech AI Vision System demo; indoor fall / falling-detected overlay with pose skeleton. Educational montage; timestamps approx.",
+  "source_dataset": "WebVideo",
+  "source_file": "https://www.youtube.com/watch?v=HrSdjP7pRuY",
+  "source_id": "HrSdjP7pRuY",
+  "source_title": "AI Vision System for Fall and Falling Detection in Elderly Care and Safety Monitoring",
+  "camera": "unknown",
+  "camera_angle": "wide",
+  "resolution": "2520x1080",
+  "fps": 30.0,
+  "duration_s": 22.0,
+  "sensor_file": null
+}

@@ -1,0 +1,26 @@
+{
+  "video": "livingroom_adl_025_20260827.mp4",
+  "scene": "livingroom",
+  "action_label": "normal",
+  "event_type": "adl",
+  "fall_start_ts": null,
+  "fall_end_ts": null,
+  "person_bbox": null,
+  "lighting": "unknown",
+  "occlusion": "unknown",
+  "subject": {
+    "subject_id": "unknown",
+    "age_group": "unknown",
+    "gender": "unknown",
+    "mobility_aid": "unknown"
+  },
+  "notes": "source=Le2i Coffee_room_02/video (61).avi; source scene=Coffee room, mapped to livingroom; actors=simulated (not elderly); demographics unknown in official files; original_resolution=320x240 (below 1280x720 spec; not upsampled); transcoded to H.264 CRF23, original codec=rawvideo; license=CC BY-NC-SA; DOI 10.25666/DATAUBFC-2024-04-09; no fall according to Annotation_files (start/end 0); labeled normal; nearfall not invented; person_bbox null (no official box at fall-start frame, or not a fall)",
+  "source_dataset": "Le2i",
+  "source_file": "Coffee_room_02/video (61).avi",
+  "camera": "unknown",
+  "camera_angle": "unknown",
+  "resolution": "320x240",
+  "fps": 25.0,
+  "duration_s": 52.56,
+  "sensor_file": ""
+}

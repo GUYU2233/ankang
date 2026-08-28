@@ -1,0 +1,29 @@
+{
+  "video": "bedroom_fall_011_20260827.mp4",
+  "scene": "bedroom",
+  "action_label": "fall",
+  "event_type": "fall_from_bed",
+  "fall_start_ts": 1.8,
+  "fall_end_ts": 4.0,
+  "person_bbox": null,
+  "lighting": "day",
+  "occlusion": "unknown",
+  "subject": {
+    "subject_id": "S_GMDCSA_04",
+    "age_group": "unknown",
+    "gender": "unknown",
+    "mobility_aid": "unknown"
+  },
+  "notes": "source=GMDCSA-24 Subject 4 Fall/01.mp4; source_scene=home (3 environments), mapped to bedroom because official description mentions a bed; actors=simulated (not elderly); demographics unknown in official files; original_resolution=640x480; lighting from CSV Time of Recording='Day (Lights On)' -> day; official classes='Falling (SW)[1.8 to 4]; Standing[0 to 1.5]'; description='Standing on the bed to falling (LS) on the bed'; fall_start/end from official CSV class time spans; license=CC BY 4.0 (Zenodo 10.5281/zenodo.13354453); GitHub copy also MIT",
+  "source_dataset": "GMDCSA-24",
+  "source_file": "Subject 4/Fall/01.mp4",
+  "camera": "laptop_webcam",
+  "camera_angle": "unknown",
+  "resolution": "640x480",
+  "fps": 29.844337090713903,
+  "duration_s": 4.675104,
+  "sensor_file": null,
+  "source_description": "Standing on the bed to falling (LS) on the bed",
+  "source_classes": "Falling (SW)[1.8 to 4]; Standing[0 to 1.5]",
+  "time_of_recording": "Day (Lights On)"
+}

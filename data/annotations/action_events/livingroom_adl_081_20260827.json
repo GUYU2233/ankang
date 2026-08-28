@@ -1,0 +1,29 @@
+{
+  "video": "livingroom_adl_081_20260827.mp4",
+  "scene": "livingroom",
+  "action_label": "normal",
+  "event_type": "sitting",
+  "fall_start_ts": null,
+  "fall_end_ts": null,
+  "person_bbox": null,
+  "lighting": "night",
+  "occlusion": "unknown",
+  "subject": {
+    "subject_id": "S_GMDCSA_03",
+    "age_group": "unknown",
+    "gender": "unknown",
+    "mobility_aid": "unknown"
+  },
+  "notes": "source=GMDCSA-24 Subject 3 ADL/14.mp4; source_scene=home (3 environments), mapped to livingroom because no bed/bathroom fixture labeled; actors=simulated (not elderly); demographics unknown in official files; original_resolution=1280x720; lighting from CSV Time of Recording='Night' -> night; official classes='Drinking[3.5 to 6]; Sitting[0 to 8]'; description='Sitting on the floor & drinking water from the water bottle'; fall_start/end from official CSV class time spans (left blank: no official span for this primary event); license=CC BY 4.0 (Zenodo 10.5281/zenodo.13354453); GitHub copy also MIT",
+  "source_dataset": "GMDCSA-24",
+  "source_file": "Subject 3/ADL/14.mp4",
+  "camera": "laptop_webcam",
+  "camera_angle": "unknown",
+  "resolution": "1280x720",
+  "fps": 15.001748324052803,
+  "duration_s": 8.865633,
+  "sensor_file": null,
+  "source_description": "Sitting on the floor & drinking water from the water bottle",
+  "source_classes": "Drinking[3.5 to 6]; Sitting[0 to 8]",
+  "time_of_recording": "Night"
+}

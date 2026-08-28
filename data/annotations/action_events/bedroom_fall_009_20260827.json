@@ -1,0 +1,29 @@
+{
+  "video": "bedroom_fall_009_20260827.mp4",
+  "scene": "bedroom",
+  "action_label": "fall",
+  "event_type": "backward_fall",
+  "fall_start_ts": 1.4,
+  "fall_end_ts": 8.0,
+  "person_bbox": null,
+  "lighting": "night",
+  "occlusion": "unknown",
+  "subject": {
+    "subject_id": "S_GMDCSA_03",
+    "age_group": "unknown",
+    "gender": "unknown",
+    "mobility_aid": "unknown"
+  },
+  "notes": "source=GMDCSA-24 Subject 3 Fall/17.mp4; source_scene=home (3 environments), mapped to bedroom because official description mentions a bed; actors=simulated (not elderly); demographics unknown in official files; original_resolution=1280x720; lighting from CSV Time of Recording='Night' -> night; official classes='Falling (BW)[1.4 to 8]; Reading[0 to 1.1]; Sitting[0 to 1.4]'; description='Reading newspaper then falling Backward on the bed'; fall_start/end from official CSV class time spans; license=CC BY 4.0 (Zenodo 10.5281/zenodo.13354453); GitHub copy also MIT",
+  "source_dataset": "GMDCSA-24",
+  "source_file": "Subject 3/Fall/17.mp4",
+  "camera": "laptop_webcam",
+  "camera_angle": "unknown",
+  "resolution": "1280x720",
+  "fps": 15.035179971887345,
+  "duration_s": 8.520687,
+  "sensor_file": null,
+  "source_description": "Reading newspaper then falling Backward on the bed",
+  "source_classes": "Falling (BW)[1.4 to 8]; Reading[0 to 1.1]; Sitting[0 to 1.4]",
+  "time_of_recording": "Night"
+}

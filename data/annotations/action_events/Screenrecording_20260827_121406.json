@@ -1,0 +1,21 @@
+{
+  "video": "Screenrecording_20260827_121406.mp4",
+  "scene": "outdoor",
+  "action_label": "fall",
+  "event_type": "syncope_fall_with_bystander",
+  "fall_start_ts": 5.2,
+  "fall_end_ts": 7.2,
+  "person_bbox": null,
+  "lighting": "day",
+  "occlusion": "partial",
+  "subject": {
+    "subject_id": "unknown",
+    "age_group": "unknown",
+    "gender": "unknown",
+    "mobility_aid": "unknown"
+  },
+  "notes": "户外白天道路/建筑旁人行区域。人物突然发病晕倒，倒地过程中带着一名路人一同跌倒；随后有人靠近查看或协助。视频中可见自行车，但未确认其与事件有关。事件时间依据视频分析估计，建议人工逐帧复核。",
+  "resolution": "720x1014",
+  "fps": 26.93,
+  "duration_s": 27.662
+}

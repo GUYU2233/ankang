@@ -1,0 +1,26 @@
+{
+  "video": "livingroom_fall_047_20260827.mp4",
+  "scene": "livingroom",
+  "action_label": "fall",
+  "event_type": "fall",
+  "fall_start_ts": 0.367,
+  "fall_end_ts": 1.368,
+  "person_bbox": null,
+  "lighting": "unknown",
+  "occlusion": "unknown",
+  "subject": {
+    "subject_id": "unknown",
+    "age_group": "unknown",
+    "gender": "unknown",
+    "mobility_aid": "unknown"
+  },
+  "notes": "source=URFD fall-24-cam0; source_scene=indoor laboratory, mapped to livingroom; actors=simulated (not elderly); demographics unknown in official files; original_resolution=640x240 (below 1280x720 spec; not upsampled); license=CC BY-NC-SA 4.0 academic non-commercial; fall_start/end from urfall-cam0-falls.csv label 0 (falling) / 1 (lying), converted via *-data.csv time_ms",
+  "source_dataset": "URFD",
+  "source_file": "fall-24-cam0.mp4",
+  "camera": "cam0",
+  "camera_angle": "side_parallel_floor",
+  "resolution": "640x240",
+  "fps": 30.0,
+  "duration_s": 2.0,
+  "sensor_file": "meta/sensor/livingroom_fall_047_20260827_acc.csv"
+}

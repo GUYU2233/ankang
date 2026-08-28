@@ -1,0 +1,29 @@
+{
+  "video": "bedroom_pick_up_001_20260827.mp4",
+  "scene": "bedroom",
+  "action_label": "nearfall",
+  "event_type": "pick_up",
+  "fall_start_ts": null,
+  "fall_end_ts": null,
+  "person_bbox": null,
+  "lighting": "day",
+  "occlusion": "unknown",
+  "subject": {
+    "subject_id": "S_GMDCSA_02",
+    "age_group": "unknown",
+    "gender": "unknown",
+    "mobility_aid": "unknown"
+  },
+  "notes": "source=GMDCSA-24 Subject 2 ADL/02.mp4; source_scene=home (3 environments), mapped to bedroom because official description mentions a bed; actors=simulated (not elderly); demographics unknown in official files; original_resolution=1280x720; lighting from CSV Time of Recording='Day' -> day; official classes='Drinking[10.5 to 11]; Sitting [0 to 11];'; description='Picking up a water bottle from the ground and drinking while sitting on the bed'; fall_start/end from official CSV class time spans (left blank: no official span for this primary event); license=CC BY 4.0 (Zenodo 10.5281/zenodo.13354453); GitHub copy also MIT",
+  "source_dataset": "GMDCSA-24",
+  "source_file": "Subject 2/ADL/02.mp4",
+  "camera": "laptop_webcam",
+  "camera_angle": "unknown",
+  "resolution": "1280x720",
+  "fps": 29.84720267268133,
+  "duration_s": 11.840667,
+  "sensor_file": null,
+  "source_description": "Picking up a water bottle from the ground and drinking while sitting on the bed",
+  "source_classes": "Drinking[10.5 to 11]; Sitting [0 to 11];",
+  "time_of_recording": "Day"
+}

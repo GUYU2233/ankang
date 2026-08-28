@@ -1,0 +1,28 @@
+{
+  "video": "livingroom_fall_w02_20260827.mp4",
+  "scene": "livingroom",
+  "action_label": "fall",
+  "event_type": "fall",
+  "fall_start_ts": 0.3,
+  "fall_end_ts": 19.8,
+  "person_bbox": null,
+  "lighting": "unknown",
+  "occlusion": "unknown",
+  "subject": {
+    "subject_id": "unknown",
+    "age_group": "unknown",
+    "gender": "unknown",
+    "mobility_aid": "unknown"
+  },
+  "notes": "source=YouTube web; yt-dlp_id=oF2dDUTHfTw; url=https://www.youtube.com/watch?v=oF2dDUTHfTw; title=SafeEdge Camera Elderly people fall detection.; approx, web source, not frame-accurate; person_bbox not invented; SafeEdge RGB/home-camera elderly fall detection demo; person on living-room floor with bounding box and emergency alert. May overlap gCF0xd4MhAA content.",
+  "source_dataset": "WebVideo",
+  "source_file": "https://www.youtube.com/watch?v=oF2dDUTHfTw",
+  "source_id": "oF2dDUTHfTw",
+  "source_title": "SafeEdge Camera Elderly people fall detection.",
+  "camera": "unknown",
+  "camera_angle": "wide",
+  "resolution": "1280x720",
+  "fps": 25.0,
+  "duration_s": 20.0,
+  "sensor_file": null
+}

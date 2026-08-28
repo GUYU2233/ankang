@@ -1,0 +1,21 @@
+{
+  "video": "video_20260827_121717.mp4",
+  "scene": "outdoor",
+  "action_label": "fall",
+  "event_type": "multi_fall_trip_sequence",
+  "fall_start_ts": 2.6,
+  "fall_end_ts": 3.0,
+  "person_bbox": null,
+  "lighting": "day",
+  "occlusion": "partial",
+  "subject": {
+    "subject_id": "unknown",
+    "age_group": "unknown",
+    "gender": "unknown",
+    "mobility_aid": "unknown"
+  },
+  "notes": "视频包含多个摔落片段和明显剪辑/叠化：人物有未站稳后摔落、被台阶绊倒等动作。首个可辨识事件约2.6秒开始、约3.0秒倒地；后续片段不宜与首个事件合并为单一连续事件。具体每个片段的独立时间区间建议后续按剪辑段逐一复核。",
+  "resolution": "720x728",
+  "fps": 30.0,
+  "duration_s": 13.099
+}

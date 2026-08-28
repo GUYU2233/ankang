@@ -1,0 +1,29 @@
+{
+  "video": "bedroom_adl_007_20260827.mp4",
+  "scene": "bedroom",
+  "action_label": "normal",
+  "event_type": "sitting",
+  "fall_start_ts": null,
+  "fall_end_ts": null,
+  "person_bbox": null,
+  "lighting": "night",
+  "occlusion": "unknown",
+  "subject": {
+    "subject_id": "S_GMDCSA_02",
+    "age_group": "unknown",
+    "gender": "unknown",
+    "mobility_aid": "unknown"
+  },
+  "notes": "source=GMDCSA-24 Subject 2 ADL/14.mp4; source_scene=home (3 environments), mapped to bedroom because official description mentions a bed; actors=simulated (not elderly); demographics unknown in official files; original_resolution=1280x720; lighting from CSV Time of Recording='Night' -> night; official classes='Reading[8.6 to 11]; Sitting[4.6 to 11]; Walking[0 to 3.6]'; description='Walking and reading something while sitting on the bed'; fall_start/end from official CSV class time spans (left blank: no official span for this primary event); license=CC BY 4.0 (Zenodo 10.5281/zenodo.13354453); GitHub copy also MIT",
+  "source_dataset": "GMDCSA-24",
+  "source_file": "Subject 2/ADL/14.mp4",
+  "camera": "laptop_webcam",
+  "camera_angle": "unknown",
+  "resolution": "1280x720",
+  "fps": 15.012344488088097,
+  "duration_s": 11.057533,
+  "sensor_file": null,
+  "source_description": "Walking and reading something while sitting on the bed",
+  "source_classes": "Reading[8.6 to 11]; Sitting[4.6 to 11]; Walking[0 to 3.6]",
+  "time_of_recording": "Night"
+}

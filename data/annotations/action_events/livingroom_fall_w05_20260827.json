@@ -1,0 +1,28 @@
+{
+  "video": "livingroom_fall_w05_20260827.mp4",
+  "scene": "livingroom",
+  "action_label": "fall",
+  "event_type": "fall",
+  "fall_start_ts": 0.3,
+  "fall_end_ts": 15.8,
+  "person_bbox": null,
+  "lighting": "day",
+  "occlusion": "unknown",
+  "subject": {
+    "subject_id": "unknown",
+    "age_group": "unknown",
+    "gender": "male",
+    "mobility_aid": "unknown"
+  },
+  "notes": "source=YouTube web; yt-dlp_id=5GJbyg-g-0c; url=https://www.youtube.com/watch?v=5GJbyg-g-0c; title=fall detection; approx, web source, not frame-accurate; person_bbox not invented; YouTube 'fall detection' indoor hallway/common area; person on floor. First ~16s is people; later hardware shots excluded. Simulated, not elderly.",
+  "source_dataset": "WebVideo",
+  "source_file": "https://www.youtube.com/watch?v=5GJbyg-g-0c",
+  "source_id": "5GJbyg-g-0c",
+  "source_title": "fall detection",
+  "camera": "unknown",
+  "camera_angle": "wide",
+  "resolution": "1280x720",
+  "fps": 60.0,
+  "duration_s": 16.0,
+  "sensor_file": null
+}

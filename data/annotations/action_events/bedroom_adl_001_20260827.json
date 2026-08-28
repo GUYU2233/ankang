@@ -1,0 +1,29 @@
+{
+  "video": "bedroom_adl_001_20260827.mp4",
+  "scene": "bedroom",
+  "action_label": "normal",
+  "event_type": "sleeping",
+  "fall_start_ts": null,
+  "fall_end_ts": null,
+  "person_bbox": null,
+  "lighting": "day",
+  "occlusion": "unknown",
+  "subject": {
+    "subject_id": "S_GMDCSA_01",
+    "age_group": "unknown",
+    "gender": "unknown",
+    "mobility_aid": "unknown"
+  },
+  "notes": "source=GMDCSA-24 Subject 1 ADL/04.mp4; source_scene=home (3 environments), mapped to bedroom because official description mentions a bed; actors=simulated (not elderly); demographics unknown in official files; original_resolution=1280x720; lighting from CSV Time of Recording='Day (Light On)' -> day; official classes='Sitting[2.5 to 5]; Sleeping[0 to 1.5]'; description='From sleeping left side on the bed (Face towards the ceiling) to sitting on the bed'; fall_start/end from official CSV class time spans (left blank: no official span for this primary event); license=CC BY 4.0 (Zenodo 10.5281/zenodo.13354453); GitHub copy also MIT",
+  "source_dataset": "GMDCSA-24",
+  "source_file": "Subject 1/ADL/04.mp4",
+  "camera": "laptop_webcam",
+  "camera_angle": "unknown",
+  "resolution": "1280x720",
+  "fps": 29.263422443323638,
+  "duration_s": 5.8426,
+  "sensor_file": null,
+  "source_description": "From sleeping left side on the bed (Face towards the ceiling) to sitting on the bed",
+  "source_classes": "Sitting[2.5 to 5]; Sleeping[0 to 1.5]",
+  "time_of_recording": "Day (Light On)"
+}

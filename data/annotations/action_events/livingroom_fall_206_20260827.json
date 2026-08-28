@@ -1,0 +1,29 @@
+{
+  "video": "livingroom_fall_206_20260827.mp4",
+  "scene": "livingroom",
+  "action_label": "fall",
+  "event_type": "backward_fall",
+  "fall_start_ts": 8.1,
+  "fall_end_ts": 12.0,
+  "person_bbox": null,
+  "lighting": "day",
+  "occlusion": "unknown",
+  "subject": {
+    "subject_id": "S_GMDCSA_03",
+    "age_group": "unknown",
+    "gender": "unknown",
+    "mobility_aid": "unknown"
+  },
+  "notes": "source=GMDCSA-24 Subject 3 Fall/14.mp4; source_scene=home (3 environments), mapped to livingroom because no bed/bathroom fixture labeled; actors=simulated (not elderly); demographics unknown in official files; original_resolution=1280x720; lighting from CSV Time of Recording='Day' -> day; official classes='Falling (BW)[8.1 to 12]; Standing[4.6 to 8.1];Walking[0 to 4.6]'; description='Falling backward on the floor while removing the shirt and trying to hang it on the hangar'; fall_start/end from official CSV class time spans; license=CC BY 4.0 (Zenodo 10.5281/zenodo.13354453); GitHub copy also MIT",
+  "source_dataset": "GMDCSA-24",
+  "source_file": "Subject 3/Fall/14.mp4",
+  "camera": "laptop_webcam",
+  "camera_angle": "unknown",
+  "resolution": "1280x720",
+  "fps": 29.8238200494084,
+  "duration_s": 12.329438,
+  "sensor_file": null,
+  "source_description": "Falling backward on the floor while removing the shirt and trying to hang it on the hangar",
+  "source_classes": "Falling (BW)[8.1 to 12]; Standing[4.6 to 8.1];Walking[0 to 4.6]",
+  "time_of_recording": "Day"
+}

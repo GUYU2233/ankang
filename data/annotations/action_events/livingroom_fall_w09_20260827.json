@@ -1,0 +1,28 @@
+{
+  "video": "livingroom_fall_w09_20260827.mp4",
+  "scene": "livingroom",
+  "action_label": "fall",
+  "event_type": "fall",
+  "fall_start_ts": 0.3,
+  "fall_end_ts": 21.8,
+  "person_bbox": null,
+  "lighting": "day",
+  "occlusion": "unknown",
+  "subject": {
+    "subject_id": "unknown",
+    "age_group": "unknown",
+    "gender": "male",
+    "mobility_aid": "unknown"
+  },
+  "notes": "source=YouTube web; yt-dlp_id=zMP-66fvoV0; url=https://www.youtube.com/watch?v=zMP-66fvoV0; title=FrailSafe - Fall Detection Demo; approx, web source, not frame-accurate; person_bbox not invented; FrailSafe EU project demo; indoor care-like room; person on floor/all-fours. Simulated adult, not clearly elderly. www.frailsafe-project.eu",
+  "source_dataset": "WebVideo",
+  "source_file": "https://www.youtube.com/watch?v=zMP-66fvoV0",
+  "source_id": "zMP-66fvoV0",
+  "source_title": "FrailSafe - Fall Detection Demo",
+  "camera": "unknown",
+  "camera_angle": "wide",
+  "resolution": "1280x720",
+  "fps": 25.0,
+  "duration_s": 22.0,
+  "sensor_file": null
+}

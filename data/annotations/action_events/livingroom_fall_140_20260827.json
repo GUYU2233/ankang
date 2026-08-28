@@ -1,0 +1,31 @@
+{
+  "video": "livingroom_fall_140_20260827.mp4",
+  "scene": "livingroom",
+  "action_label": "fall",
+  "event_type": "fall",
+  "fall_start_ts": 7.208218,
+  "fall_end_ts": 7.583212,
+  "person_bbox": [
+    108.0,
+    81.0,
+    230.0,
+    166.0
+  ],
+  "lighting": "unknown",
+  "occlusion": "unknown",
+  "subject": {
+    "subject_id": "unknown",
+    "age_group": "unknown",
+    "gender": "unknown",
+    "mobility_aid": "unknown"
+  },
+  "notes": "source=Le2i Home_01/video (25).avi; source scene=Home, mapped to livingroom (not relabeled bedroom/bathroom); actors=simulated (not elderly); demographics unknown in official files; original_resolution=320x180 (below 1280x720 spec; not upsampled); transcoded to H.264 CRF23, original codec=rawvideo; license=CC BY-NC-SA; DOI 10.25666/DATAUBFC-2024-04-09; fall frames 173-182 from Annotation_files; timestamps=frame/ffprobe_fps (fps=24; dataset README 25 fps); person_bbox = official xmin,ymin,xmax,ymax at fall-start frame",
+  "source_dataset": "Le2i",
+  "source_file": "Home_01/video (25).avi",
+  "camera": "unknown",
+  "camera_angle": "unknown",
+  "resolution": "320x180",
+  "fps": 24.0003840061441,
+  "duration_s": 8.874858,
+  "sensor_file": ""
+}
