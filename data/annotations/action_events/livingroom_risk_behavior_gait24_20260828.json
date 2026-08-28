@@ -1,0 +1,31 @@
+{
+  "video": "livingroom_risk_behavior_gait24_20260828.mp4",
+  "scene": "livingroom",
+  "action_label": "risk_behavior",
+  "event_type": "wall_holding",
+  "fall_start_ts": null,
+  "fall_end_ts": null,
+  "person_bbox": null,
+  "lighting": "day",
+  "occlusion": "unknown",
+  "people_count": "2p+",
+  "subject": {
+    "subject_id": "unknown",
+    "age_group": "adult",
+    "gender": "male",
+    "mobility_aid": "none"
+  },
+  "notes": "source=YouTube web; yt-dlp_id=o83tjWsyC_U; url=https://www.youtube.com/watch?v=o83tjWsyC_U; title=gait training and assessment in parallel bar; clip_window_s=5.0-43.0; approx, web source, not frame-accurate; person_bbox not invented; Gait training in parallel bars; patient holds rails while walking indoor PT gym. Mapped livingroom (clinic).",
+  "source_dataset": "WebVideo",
+  "source_file": "https://www.youtube.com/watch?v=o83tjWsyC_U",
+  "source_id": "o83tjWsyC_U",
+  "source_title": "gait training and assessment in parallel bar",
+  "camera": "unknown",
+  "camera_angle": "wide",
+  "resolution": "1280x720",
+  "fps": 25.0,
+  "duration_s": 38.0,
+  "sensor_file": null,
+  "clip_start_s": 5.0,
+  "clip_end_s": 43.0
+}

@@ -1,0 +1,31 @@
+{
+  "video": "livingroom_risk_behavior_gait21_20260828.mp4",
+  "scene": "livingroom",
+  "action_label": "risk_behavior",
+  "event_type": "stagger",
+  "fall_start_ts": null,
+  "fall_end_ts": null,
+  "person_bbox": null,
+  "lighting": "day",
+  "occlusion": "unknown",
+  "people_count": "2p+",
+  "subject": {
+    "subject_id": "unknown",
+    "age_group": "adult",
+    "gender": "male",
+    "mobility_aid": "none"
+  },
+  "notes": "source=YouTube web; yt-dlp_id=5Dj827uCP3g; url=https://www.youtube.com/watch?v=5Dj827uCP3g; title=Cerebellar Gait - tandem walk; clip_window_s=2.0-28.9; approx, web source, not frame-accurate; person_bbox not invented; Cerebellar gait tandem walk exam; heel-to-toe unsteady indoor clinic.",
+  "source_dataset": "WebVideo",
+  "source_file": "https://www.youtube.com/watch?v=5Dj827uCP3g",
+  "source_id": "5Dj827uCP3g",
+  "source_title": "Cerebellar Gait - tandem walk",
+  "camera": "unknown",
+  "camera_angle": "side",
+  "resolution": "304x204",
+  "fps": 10.0,
+  "duration_s": 26.9,
+  "sensor_file": null,
+  "clip_start_s": 2.0,
+  "clip_end_s": 28.905283
+}

@@ -1,0 +1,31 @@
+{
+  "video": "livingroom_risk_behavior_gait36_20260828.mp4",
+  "scene": "livingroom",
+  "action_label": "risk_behavior",
+  "event_type": "repeated_stand",
+  "fall_start_ts": null,
+  "fall_end_ts": null,
+  "person_bbox": null,
+  "lighting": "day",
+  "occlusion": "unknown",
+  "people_count": "1p",
+  "subject": {
+    "subject_id": "unknown",
+    "age_group": "adult",
+    "gender": "female",
+    "mobility_aid": "none"
+  },
+  "notes": "source=YouTube web; yt-dlp_id=8DA7JC_SIIs; url=https://www.youtube.com/watch?v=8DA7JC_SIIs; title=Simple Balance Test at Home : The 5 Times Sit to Stand Test #3; clip_window_s=8.0-38.0; approx, web source, not frame-accurate; person_bbox not invented; 5 Times Sit to Stand Test demonstration in PT clinic; arms crossed. Actor young.",
+  "source_dataset": "WebVideo",
+  "source_file": "https://www.youtube.com/watch?v=8DA7JC_SIIs",
+  "source_id": "8DA7JC_SIIs",
+  "source_title": "Simple Balance Test at Home : The 5 Times Sit to Stand Test #3",
+  "camera": "unknown",
+  "camera_angle": "wide",
+  "resolution": "1280x720",
+  "fps": 30.0,
+  "duration_s": 30.0,
+  "sensor_file": null,
+  "clip_start_s": 8.0,
+  "clip_end_s": 38.0
+}

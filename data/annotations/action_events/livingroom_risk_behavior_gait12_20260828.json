@@ -1,0 +1,31 @@
+{
+  "video": "livingroom_risk_behavior_gait12_20260828.mp4",
+  "scene": "livingroom",
+  "action_label": "risk_behavior",
+  "event_type": "unstable_gait",
+  "fall_start_ts": null,
+  "fall_end_ts": null,
+  "person_bbox": null,
+  "lighting": "day",
+  "occlusion": "unknown",
+  "people_count": "1p",
+  "subject": {
+    "subject_id": "unknown",
+    "age_group": "adult",
+    "gender": "male",
+    "mobility_aid": "none"
+  },
+  "notes": "source=YouTube web; yt-dlp_id=7Ft1bUTzxkM; url=https://www.youtube.com/watch?v=7Ft1bUTzxkM; title=Steppage and Foot Slap Gait Foot Drop; clip_window_s=0.0-34.5; approx, web source, not frame-accurate; person_bbox not invented; MSK Medicine steppage/foot-slap gait (foot drop) indoor hallway.",
+  "source_dataset": "WebVideo",
+  "source_file": "https://www.youtube.com/watch?v=7Ft1bUTzxkM",
+  "source_id": "7Ft1bUTzxkM",
+  "source_title": "Steppage and Foot Slap Gait Foot Drop",
+  "camera": "unknown",
+  "camera_angle": "side",
+  "resolution": "1280x720",
+  "fps": 23.976023976023978,
+  "duration_s": 34.5345,
+  "sensor_file": null,
+  "clip_start_s": 0.0,
+  "clip_end_s": 34.5
+}

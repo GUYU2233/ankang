@@ -1,0 +1,31 @@
+{
+  "video": "livingroom_risk_behavior_gait26_20260828.mp4",
+  "scene": "livingroom",
+  "action_label": "risk_behavior",
+  "event_type": "wall_holding",
+  "fall_start_ts": null,
+  "fall_end_ts": null,
+  "person_bbox": null,
+  "lighting": "day",
+  "occlusion": "unknown",
+  "people_count": "2p+",
+  "subject": {
+    "subject_id": "unknown",
+    "age_group": "elderly",
+    "gender": "female",
+    "mobility_aid": "none"
+  },
+  "notes": "source=YouTube web; yt-dlp_id=R8vWLVhbeAU; url=https://www.youtube.com/watch?v=R8vWLVhbeAU; title=Parallel Bars - Road to Recovery; clip_window_s=8.0-46.0; approx, web source, not frame-accurate; person_bbox not invented; ProMedica Senior Care: elderly woman between parallel bars with gait belt; rail-holding gait training.",
+  "source_dataset": "WebVideo",
+  "source_file": "https://www.youtube.com/watch?v=R8vWLVhbeAU",
+  "source_id": "R8vWLVhbeAU",
+  "source_title": "Parallel Bars - Road to Recovery",
+  "camera": "unknown",
+  "camera_angle": "wide",
+  "resolution": "1280x720",
+  "fps": 24.0,
+  "duration_s": 38.0,
+  "sensor_file": null,
+  "clip_start_s": 8.0,
+  "clip_end_s": 46.0
+}

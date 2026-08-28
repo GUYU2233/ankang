@@ -1,0 +1,31 @@
+{
+  "video": "livingroom_risk_behavior_gait06_20260828.mp4",
+  "scene": "livingroom",
+  "action_label": "risk_behavior",
+  "event_type": "unstable_gait",
+  "fall_start_ts": null,
+  "fall_end_ts": null,
+  "person_bbox": null,
+  "lighting": "day",
+  "occlusion": "unknown",
+  "people_count": "1p",
+  "subject": {
+    "subject_id": "unknown",
+    "age_group": "elderly",
+    "gender": "male",
+    "mobility_aid": "none"
+  },
+  "notes": "source=YouTube web; yt-dlp_id=uV6dPE2sz7k; url=https://www.youtube.com/watch?v=uV6dPE2sz7k; title=Parkinson's Disease Gait Example; clip_window_s=8.0-44.0; approx, web source, not frame-accurate; person_bbox not invented; Mission Gait Parkinson's Disease gait example; elderly man walking indoor clinic; face blurred.",
+  "source_dataset": "WebVideo",
+  "source_file": "https://www.youtube.com/watch?v=uV6dPE2sz7k",
+  "source_id": "uV6dPE2sz7k",
+  "source_title": "Parkinson's Disease Gait Example",
+  "camera": "unknown",
+  "camera_angle": "side",
+  "resolution": "1280x720",
+  "fps": 60.0,
+  "duration_s": 36.0,
+  "sensor_file": null,
+  "clip_start_s": 8.0,
+  "clip_end_s": 44.0
+}

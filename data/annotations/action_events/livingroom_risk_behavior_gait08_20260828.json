@@ -1,0 +1,31 @@
+{
+  "video": "livingroom_risk_behavior_gait08_20260828.mp4",
+  "scene": "livingroom",
+  "action_label": "risk_behavior",
+  "event_type": "unstable_gait",
+  "fall_start_ts": null,
+  "fall_end_ts": null,
+  "person_bbox": null,
+  "lighting": "day",
+  "occlusion": "unknown",
+  "people_count": "1p",
+  "subject": {
+    "subject_id": "unknown",
+    "age_group": "unknown",
+    "gender": "unknown",
+    "mobility_aid": "walker"
+  },
+  "notes": "source=YouTube web; yt-dlp_id=aYMTOz9Rw3Y; url=https://www.youtube.com/watch?v=aYMTOz9Rw3Y; title=Parkinson's Disease: Cueing ambulation, improved walking; clip_window_s=0.0-28.0; approx, web source, not frame-accurate; person_bbox not invented; Parkinson's cueing ambulation; rollator/walker indoor with floor tape visual cues.",
+  "source_dataset": "WebVideo",
+  "source_file": "https://www.youtube.com/watch?v=aYMTOz9Rw3Y",
+  "source_id": "aYMTOz9Rw3Y",
+  "source_title": "Parkinson's Disease: Cueing ambulation, improved walking",
+  "camera": "unknown",
+  "camera_angle": "wide",
+  "resolution": "1280x720",
+  "fps": 30.0,
+  "duration_s": 28.0,
+  "sensor_file": null,
+  "clip_start_s": 0.0,
+  "clip_end_s": 28.0
+}
