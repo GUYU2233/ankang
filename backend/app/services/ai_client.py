@@ -9,15 +9,16 @@ from app.schemas.schemas import AIInferResponse
 
 
 class AIEngineClient:
-    """调用 AI 推理引擎（ai-engine 服务）。"""
+    """调用 AI 推理引擎（ai-engine 服务）。使用持久连接池，避免每请求新建握手。"""
 
     def __init__(self) -> None:
         self.settings = get_settings()
+        self._client = httpx.Client(timeout=8.0, limits=httpx.Limits(max_connections=32, max_keepalive_connections=16))
 
     def ensure_stream(self, stream_id: str, source: str, target_fps: float = 15.0) -> bool:
         """确保 AI 引擎侧存在某设备的连续流推理 worker。"""
         try:
-            resp = httpx.post(
+            resp = self._client.post(
                 f"{self.settings.ai_engine_url}/v1/streams/{stream_id}/start",
                 json={"source": source, "target_fps": target_fps, "loop_file": True},
                 timeout=8,
@@ -30,7 +31,7 @@ class AIEngineClient:
 
     def get_stream_latest(self, stream_id: str) -> AIInferResponse | None:
         try:
-            resp = httpx.get(
+            resp = self._client.get(
                 f"{self.settings.ai_engine_url}/v1/streams/{stream_id}/latest",
                 timeout=8,
             )
@@ -43,11 +44,11 @@ class AIEngineClient:
             return None
 
     def get_stream_frame(self, stream_id: str) -> bytes | None:
-        """获取 AI 引擎侧最新一帧的带骨架标注 JPEG。"""
+        """获取 AI 引擎侧最新一帧的带骨架标注 JPEG。短超时，失败快速回落本地帧。"""
         try:
-            resp = httpx.get(
+            resp = self._client.get(
                 f"{self.settings.ai_engine_url}/v1/streams/{stream_id}/frame.jpg",
-                timeout=8,
+                timeout=3,
             )
             if resp.status_code == 200 and resp.content:
                 return resp.content
@@ -57,7 +58,7 @@ class AIEngineClient:
 
     def stop_stream(self, stream_id: str) -> None:
         try:
-            httpx.post(f"{self.settings.ai_engine_url}/v1/streams/{stream_id}/stop", timeout=8)
+            self._client.post(f"{self.settings.ai_engine_url}/v1/streams/{stream_id}/stop", timeout=8)
         except Exception:
             pass
 
@@ -66,7 +67,7 @@ class AIEngineClient:
         if not ok:
             return None
         try:
-            resp = httpx.post(
+            resp = self._client.post(
                 f"{self.settings.ai_engine_url}/v1/infer",
                 files={"file": ("frame.jpg", buf.tobytes(), "image/jpeg")},
                 params={"stream_id": stream_id},

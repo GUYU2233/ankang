@@ -1,9 +1,8 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, HTTPException
 from fastapi.responses import Response
-from sqlalchemy.orm import Session
 
 from app.core.stream_service import stream_service
-from app.db import get_db
+from app.db import SessionLocal
 from app.models.entities import Device
 from app.services.ai_client import ai_client
 
@@ -19,6 +18,16 @@ def _is_stream_source(device: Device) -> bool:
     return url.lower().startswith("rtsp://") or url.lower().endswith(_VIDEO_EXTS)
 
 
+def _load_device(device_id: int) -> Device | None:
+    """短会话加载设备后立即释放 DB 连接，避免 AI 引擎网络调用期间占用连接。"""
+    with SessionLocal() as db:
+        device = db.get(Device, device_id)
+        if device is not None:
+            # 预读常用列，避免会话关闭后触发惰性加载
+            _ = (device.id, device.access_url, device.vendor, device.scene, device.device_name)
+        return device
+
+
 @router.get("/local-videos")
 def list_local_videos():
     """列出 data/videos 下可循环播放的本地视频，供模拟设备选用。"""
@@ -26,8 +35,8 @@ def list_local_videos():
 
 
 @router.get("/{device_id}/frame.jpg")
-def get_frame_jpeg(device_id: int, db: Session = Depends(get_db)):
-    device = db.get(Device, device_id)
+def get_frame_jpeg(device_id: int):
+    device = _load_device(device_id)
     if device is None:
         raise HTTPException(status_code=404, detail="设备不存在")
     # 视频/RTSP 源：优先取 AI 引擎带骨架标注的帧（与检测结果严格对齐）
@@ -48,8 +57,8 @@ def get_frame_jpeg(device_id: int, db: Session = Depends(get_db)):
 
 
 @router.get("/{device_id}/meta")
-def get_frame_meta(device_id: int, db: Session = Depends(get_db)):
-    device = db.get(Device, device_id)
+def get_frame_meta(device_id: int):
+    device = _load_device(device_id)
     if device is None:
         raise HTTPException(status_code=404, detail="设备不存在")
     infer = stream_service.get_latest_result(device.id)
