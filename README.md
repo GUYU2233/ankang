@@ -49,3 +49,41 @@ npm run dev             # http://127.0.0.1:5173
 | 海康威视 IPC/NVR | HCNetSDK 桥接 + ISAPI + RTSP/ONVIF 统一适配 | 接口预留，无真机，支持 RTSP 手工接入 |
 | 第三方 ONVIF/RTSP | RTSP 接入 + OpenCV 取流 | 支持 |
 | 本地视频/合成流 | 模拟摄像机 | 支持（开发演示） |
+
+## 多模态视觉巡检（定时截图 + 大模型识别）
+
+在原有“骨架时序跌倒检测”之外，新增一条独立的大模型视觉巡检链路：按固定周期对每路监控截图，
+调用多模态大模型（通义千问 Qwen-VL / 智谱 GLM-4V / OpenAI GPT-4o / Google Gemini，OpenAI 兼容协议）
+识别风险，结构化结果落库并接入分级告警与 WebSocket 推送。
+
+可识别事件：`fall`（跌倒/倒地）、`posture_abnormal`（姿态/行为异常）、`floor_clutter`（地面杂物/障碍）、
+`other_risk`（火灾烟雾、漏水等）、`normal`（正常）。
+
+### 配置
+
+在 `backend/.env` 或环境变量中设置（也可由前端通过 `PUT /api/v1/multimodal/config` 在线修改）：
+
+```
+MULTIMODAL_ENABLED=false        # 是否启用定时巡检
+MULTIMODAL_PROVIDER=qwen       # qwen / glm / gpt / gemini / custom
+MULTIMODAL_MODEL=              # 留空用提供商默认模型
+MULTIMODAL_API_KEY=            # 或使用提供商原生环境变量（DASHSCOPE_API_KEY 等）
+MULTIMODAL_INTERVAL_SECONDS=60
+```
+
+### 后端接口（供前端对接）
+
+| 方法与路径 | 说明 |
+|---|---|
+| `GET /api/v1/multimodal/config` | 读取巡检配置（密钥以掩码返回） |
+| `PUT /api/v1/multimodal/config` | 更新巡检配置（provider/model/api_key/间隔/启停/自定义提示词） |
+| `GET /api/v1/multimodal/providers` | 支持的提供商与默认模型列表 |
+| `GET /api/v1/multimodal/status` | 巡检循环状态（运行/启停/最近执行/统计） |
+| `POST /api/v1/multimodal/analyze/{device_id}` | 手动触发单设备识别 |
+| `GET /api/v1/multimodal/results` | 巡检历史（按设备/事件/等级过滤，分页） |
+| `GET /api/v1/multimodal/results/{id}/image` | 读取某次巡检截图 |
+
+识别出风险后会生成一条 `alert_events` 告警并经 WebSocket 推送（`source=multimodal`），
+跌倒事件同步写入 `fall_events`；截图存至 `runtime/multimodal/`。
+
+> 说明：大模型输出仅用于安全提醒，不构成医疗诊断；紧急情况请直接拨打急救电话。
