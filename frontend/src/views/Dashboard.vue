@@ -2,7 +2,7 @@
   <div>
     <el-row :gutter="16">
       <el-col :span="6" v-for="c in cards" :key="c.label">
-        <el-card shadow="hover">
+        <el-card shadow="never">
           <div class="stat-value">{{ c.value }}</div>
           <div class="stat-label">{{ c.label }}</div>
         </el-card>

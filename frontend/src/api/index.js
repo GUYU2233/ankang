@@ -17,5 +17,11 @@ export default {
   residents: () => http.get('/residents'),
   addResident: (r) => http.post('/residents', r),
   alerts: (level) => http.get('/alerts', { params: level ? { level } : {} }),
-  ackAlert: (id, handled) => http.post('/alerts/' + id + '/ack', null, { params: { handled: !!handled } })
+  ackAlert: (id, handled) => http.post('/alerts/' + id + '/ack', null, { params: { handled: !!handled } }),
+  multimodalConfig: () => http.get('/multimodal/config'),
+  saveMultimodalConfig: (c) => http.put('/multimodal/config', c),
+  multimodalProviders: () => http.get('/multimodal/providers'),
+  multimodalStatus: () => http.get('/multimodal/status'),
+  multimodalAnalyze: (id) => http.post('/multimodal/analyze/' + id),
+  multimodalResults: (params) => http.get('/multimodal/results', { params })
 }

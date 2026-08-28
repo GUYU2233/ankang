@@ -19,7 +19,7 @@
             <el-button size="small" @click="loadDevices">刷新</el-button>
           </div>
         </template>
-        <img v-if="currentId" :src="frameSrc" style="width:100%; border-radius:6px;" alt="实时画面" />
+        <img v-if="currentId" :src="frameSrc" style="width:100%;" alt="实时画面" />
         <el-empty v-else description="请选择左侧监控通道" />
         <div style="margin-top:10px;">
           <el-descriptions v-if="meta" :column="3" size="small" border>

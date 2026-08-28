@@ -6,7 +6,8 @@ const routes = [
   { path: '/devices', name: 'devices', component: () => import('../views/Devices.vue'), meta: { title: '设备接入' } },
   { path: '/residents', name: 'residents', component: () => import('../views/Residents.vue'), meta: { title: '老人档案' } },
   { path: '/alerts', name: 'alerts', component: () => import('../views/Alerts.vue'), meta: { title: '告警中心' } },
-  { path: '/live', name: 'live', component: () => import('../views/Live.vue'), meta: { title: '实时画面' } }
+  { path: '/live', name: 'live', component: () => import('../views/Live.vue'), meta: { title: '实时画面' } },
+  { path: '/multimodal', name: 'multimodal', component: () => import('../views/Multimodal.vue'), meta: { title: '视觉巡检' } }
 ]
 
 export default createRouter({ history: createWebHistory(), routes })
