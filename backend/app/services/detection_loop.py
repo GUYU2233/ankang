@@ -61,7 +61,10 @@ class DetectionLoop:
                 return None
             stream_id = f"device-{device.id}"
             if self._is_stream_source(device):
-                ai_client.ensure_stream(stream_id, device.access_url, target_fps=15.0)
+                url = (device.access_url or "").strip()
+                if url.lower().endswith((".mp4", ".avi", ".mkv")):
+                    url = stream_service.resolve_video_path(url)
+                ai_client.ensure_stream(stream_id, url, target_fps=15.0)
                 infer = ai_client.get_stream_latest(stream_id)
                 if infer is None:
                     packet = stream_service.get_frame(device)

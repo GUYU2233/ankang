@@ -9,6 +9,12 @@ from app.models.entities import Device
 router = APIRouter(prefix="/streams", tags=["视频流"])
 
 
+@router.get("/local-videos")
+def list_local_videos():
+    """列出 data/videos 下可循环播放的本地视频，供模拟设备选用。"""
+    return stream_service.list_local_videos()
+
+
 @router.get("/{device_id}/frame.jpg")
 def get_frame_jpeg(device_id: int, db: Session = Depends(get_db)):
     device = db.get(Device, device_id)

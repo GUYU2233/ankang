@@ -13,18 +13,22 @@
     <el-table :data="devices" size="small">
       <el-table-column prop="id" label="ID" width="60" />
       <el-table-column prop="device_name" label="名称" />
-      <el-table-column prop="device_serial" label="序列号/地址" width="180" />
+      <el-table-column prop="device_serial" label="序列号/地址" width="160" />
       <el-table-column prop="vendor" label="接入方式" width="100" />
       <el-table-column prop="scene" label="场景" width="90" />
+      <el-table-column label="视频源" show-overflow-tooltip>
+        <template #default="s">{{ sourceText(s.row) }}</template>
+      </el-table-column>
       <el-table-column prop="status" label="状态" width="90" />
-      <el-table-column label="操作" width="160">
+      <el-table-column label="操作" width="150">
         <template #default="s">
+          <el-button size="small" @click="openEdit(s.row)">编辑</el-button>
           <el-button size="small" type="danger" @click="onDelete(s.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
 
-    <el-dialog v-model="dialogVisible" title="登记设备" width="520px">
+    <el-dialog v-model="dialogVisible" :title="editingId ? '编辑设备' : '登记设备'" width="560px">
       <el-form :model="form" label-width="100px">
         <el-form-item label="设备名称"><el-input v-model="form.device_name" /></el-form-item>
         <el-form-item label="序列号"><el-input v-model="form.device_serial" /></el-form-item>
@@ -44,35 +48,67 @@
             <el-option label="卫生间" value="卫生间" />
           </el-select>
         </el-form-item>
-        <el-form-item label="RTSP/视频地址"><el-input v-model="form.access_url" placeholder="rtsp://... 或 本地mp4路径" /></el-form-item>
+        <el-form-item v-if="form.vendor === 'sim'" label="本地视频">
+          <el-select v-model="videoPath" clearable filterable placeholder="留空使用自动合成画面" style="width:100%">
+            <el-option v-for="v in videos" :key="v.path" :label="videoLabel(v)" :value="v.path" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="RTSP/视频地址">
+          <el-input v-model="form.access_url" placeholder="rtsp://... 或 本地视频" />
+        </el-form-item>
       </el-form>
       <template #footer>
         <el-button @click="dialogVisible = false">取消</el-button>
-        <el-button type="primary" @click="onAdd">确定</el-button>
+        <el-button type="primary" @click="onSave">确定</el-button>
       </template>
     </el-dialog>
   </el-card>
 </template>
 
 <script setup>
-import { onMounted, ref, reactive } from 'vue'
+import { onMounted, reactive, ref, watch } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import api from '../api'
 
 const devices = ref([])
+const videos = ref([])
 const dialogVisible = ref(false)
+const editingId = ref(null)
+const videoPath = ref('')
 const form = reactive({ device_name: '', device_serial: '', vendor: 'sim', scene: '客厅', access_url: '' })
 
-async function load() {
-  devices.value = await api.devices()
-}
+function sourceText(row) { return row.access_url || '合成画面' }
+function videoLabel(v) { return v.scene ? v.name + '（' + v.scene + '）' : v.name }
+
+async function load() { devices.value = await api.devices() }
+async function loadVideos() { videos.value = await api.localVideos() }
+
 function openAdd() {
+  editingId.value = null
+  videoPath.value = ''
   Object.assign(form, { device_name: '', device_serial: '', vendor: 'sim', scene: '客厅', access_url: '' })
   dialogVisible.value = true
 }
-async function onAdd() {
-  await api.addDevice(form)
-  ElMessage.success('设备已登记')
+function openEdit(row) {
+  editingId.value = row.id
+  Object.assign(form, {
+    device_name: row.device_name, device_serial: row.device_serial,
+    vendor: row.vendor, scene: row.scene, access_url: row.access_url || ''
+  })
+  const url = row.access_url || ''
+  videoPath.value = /.(mp4|avi|mkv)$/i.test(url) ? url : ''
+  dialogVisible.value = true
+}
+watch(videoPath, (v) => { if (form.vendor === 'sim') form.access_url = v || '' })
+
+async function onSave() {
+  if (editingId.value) {
+    await api.updateDevice(editingId.value, form)
+    ElMessage.success('设备已更新')
+  } else {
+    await api.addDevice(form)
+    ElMessage.success('设备已登记')
+  }
   dialogVisible.value = false
   load()
 }
@@ -87,7 +123,7 @@ async function onDelete(row) {
   ElMessage.success('已删除')
   load()
 }
-onMounted(load)
+onMounted(() => { load(); loadVideos() })
 </script>
 
 <style scoped>
