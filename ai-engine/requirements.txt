@@ -7,7 +7,7 @@ loguru>=0.7
 python-multipart>=0.0.9
 # 真实姿态推理与在线时序模型
 ultralytics>=8.2
-onnxruntime>=1.18
+onnxruntime-gpu>=1.20
 # 训练依赖请使用 requirements-training.txt
 # torch>=2.0
 # torchvision>=0.15

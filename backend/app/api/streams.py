@@ -5,8 +5,18 @@ from sqlalchemy.orm import Session
 from app.core.stream_service import stream_service
 from app.db import get_db
 from app.models.entities import Device
+from app.services.ai_client import ai_client
 
 router = APIRouter(prefix="/streams", tags=["视频流"])
+
+_VIDEO_EXTS = (".mp4", ".avi", ".mkv")
+
+
+def _is_stream_source(device: Device) -> bool:
+    url = (device.access_url or "").strip()
+    if not url:
+        return False
+    return url.lower().startswith("rtsp://") or url.lower().endswith(_VIDEO_EXTS)
 
 
 @router.get("/local-videos")
@@ -20,12 +30,21 @@ def get_frame_jpeg(device_id: int, db: Session = Depends(get_db)):
     device = db.get(Device, device_id)
     if device is None:
         raise HTTPException(status_code=404, detail="设备不存在")
+    # 视频/RTSP 源：优先取 AI 引擎带骨架标注的帧（与检测结果严格对齐）
+    if _is_stream_source(device):
+        buf = ai_client.get_stream_frame(f"device-{device.id}")
+        if buf:
+            return Response(content=buf, media_type="image/jpeg")
+        # 引擎未就绪时回落本地原始帧
     try:
         packet = stream_service.get_frame(device)
     except Exception as exc:
         raise HTTPException(status_code=500, detail=f"取流失败: {exc}")
-    jpeg = stream_service.encode_jpeg(packet.frame)
-    return Response(content=jpeg, media_type="image/jpeg")
+    frame = packet.frame
+    infer = stream_service.get_latest_result(device.id)
+    if infer is not None:
+        frame = stream_service.draw_overlay(frame, infer)
+    return Response(content=stream_service.encode_jpeg(frame), media_type="image/jpeg")
 
 
 @router.get("/{device_id}/meta")
@@ -33,5 +52,28 @@ def get_frame_meta(device_id: int, db: Session = Depends(get_db)):
     device = db.get(Device, device_id)
     if device is None:
         raise HTTPException(status_code=404, detail="设备不存在")
-    packet = stream_service.get_frame(device)
-    return {"device_id": device_id, "meta": packet.meta, "captured_at": packet.captured_at}
+    infer = stream_service.get_latest_result(device.id)
+    if _is_stream_source(device):
+        # 视频/RTSP 源：不重复本地解码，检测字段来自检测循环写入的最新结果
+        meta = {
+            "source": "rtsp" if (device.access_url or "").startswith("rtsp://") else "local_video",
+            "state": "playing",
+        }
+        captured_at = None
+    else:
+        packet = stream_service.get_frame(device)
+        meta = dict(packet.meta)
+        captured_at = packet.captured_at
+    if infer is not None:
+        meta.update({
+            "fall_detected": infer.fall_detected,
+            "fall_prob": infer.fall_prob,
+            "nearfall_prob": infer.nearfall_prob,
+            "gait_unsteadiness": infer.gait_unsteadiness,
+            "risk_score": infer.risk_score,
+            "level": infer.level,
+            "person_count": infer.person_count,
+            "fall_type": infer.fall_type,
+            "mock": infer.mock,
+        })
+    return {"device_id": device_id, "meta": meta, "captured_at": captured_at}

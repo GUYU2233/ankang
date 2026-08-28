@@ -11,6 +11,23 @@ from loguru import logger
 
 _BASE_DIR = Path(__file__).resolve().parents[2]  # ai-engine 目录
 
+_DLL_HOOKS: list = []
+
+
+def _register_cuda_dll_dir() -> None:
+    # onnxruntime-gpu 的 CUDA EP 需要 cuDNN 9 / CUDA 12 运行库；
+    # 复用 PyTorch 自带的 torch/lib 下的 DLL，免去单独安装 CUDA toolkit。
+    try:
+        import torch as _torch
+        lib = os.path.join(os.path.dirname(_torch.__file__), "lib")
+        if os.path.isdir(lib):
+            _DLL_HOOKS.append(os.add_dll_directory(lib))
+    except Exception:
+        pass
+
+
+_register_cuda_dll_dir()
+
 
 class RealRuntime:
     """真实推理流水线。
@@ -179,6 +196,8 @@ class RealRuntime:
             "risk_factors": risk_factors,
             "risk_score": round(float(risk_score), 3),
             "level": level,
+            "keypoints": [[round(float(p[0]), 1), round(float(p[1]), 1), round(float(p[2]), 2)] for p in kpts],
+            "bbox": [round(float(v), 1) for v in xyxy],
             "frame_ms": 0,
             "mock": False,
         }
@@ -253,6 +272,8 @@ class RealRuntime:
             "risk_factors": [],
             "risk_score": 0.0,
             "level": "green",
+            "keypoints": [],
+            "bbox": [],
             "frame_ms": 0,
             "mock": False,
         }

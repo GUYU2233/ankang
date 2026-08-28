@@ -8,6 +8,43 @@ from typing import Any
 import cv2
 from loguru import logger
 
+_SKELETON_EDGES = [
+    (0, 1), (0, 2), (1, 3), (2, 4),            # 头面部
+    (5, 6), (5, 7), (6, 8), (7, 9), (8, 10),    # 肩臂
+    (5, 11), (6, 12), (11, 12),                  # 躯干
+    (11, 13), (12, 14), (13, 15), (14, 16),      # 腿
+]
+_LEVEL_COLORS = {
+    "red": (0, 0, 255),
+    "orange": (0, 140, 255),
+    "yellow": (0, 215, 255),
+    "green": (0, 200, 0),
+}
+
+
+def _draw_annotations(frame, result):
+    """在原始帧上绘制人体包围框与 17 点骨架。"""
+    out = frame.copy()
+    keypoints = result.get("keypoints") or []
+    bbox = result.get("bbox") or []
+    color = _LEVEL_COLORS.get(result.get("level", ""), (0, 200, 0))
+    if bbox and len(bbox) == 4:
+        x1, y1, x2, y2 = (int(round(float(v))) for v in bbox)
+        cv2.rectangle(out, (x1, y1), (x2, y2), (0, 255, 0), 2)
+    pts = []
+    for p in keypoints[:17]:
+        if len(p) >= 3 and float(p[2]) >= 0.3:
+            pts.append((int(round(float(p[0]))), int(round(float(p[1]))), float(p[2])))
+        else:
+            pts.append(None)
+    for pt in pts:
+        if pt is not None:
+            cv2.circle(out, (pt[0], pt[1]), 3, color, -1)
+    for a, b in _SKELETON_EDGES:
+        if a < len(pts) and b < len(pts) and pts[a] is not None and pts[b] is not None:
+            cv2.line(out, (pts[a][0], pts[a][1]), (pts[b][0], pts[b][1]), (0, 255, 255), 2)
+    return out
+
 
 @dataclass
 class StreamState:
@@ -16,6 +53,7 @@ class StreamState:
     target_fps: float
     loop_file: bool = True
     latest_result: dict[str, Any] | None = None
+    latest_frame: Any = None
     latest_at: float = 0.0
     frames_processed: int = 0
     started_at: float = field(default_factory=time.time)
@@ -73,6 +111,7 @@ class StreamManager:
                 result = self.runtime.execute(frame, stream_id=state.stream_id)
                 now = time.time()
                 state.latest_result = result
+                state.latest_frame = frame
                 state.latest_at = now
                 state.frames_processed += 1
                 report_frames += 1
@@ -100,6 +139,17 @@ class StreamManager:
         with self._lock:
             state = self._states.get(stream_id)
             return dict(state.latest_result) if state and state.latest_result else None
+
+    def frame_jpg(self, stream_id: str) -> bytes | None:
+        """返回带骨架标注的最新帧 JPEG，供前端预览。"""
+        with self._lock:
+            state = self._states.get(stream_id)
+            if not state or state.latest_frame is None:
+                return None
+            result = state.latest_result or {}
+            annotated = _draw_annotations(state.latest_frame, result)
+        ok, buf = cv2.imencode(".jpg", annotated, [cv2.IMWRITE_JPEG_QUALITY, 85])
+        return buf.tobytes() if ok else None
 
     def status(self, stream_id: str) -> dict:
         with self._lock:

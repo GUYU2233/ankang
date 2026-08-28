@@ -42,6 +42,19 @@ class AIEngineClient:
             logger.warning(f"读取流结果失败: {exc}")
             return None
 
+    def get_stream_frame(self, stream_id: str) -> bytes | None:
+        """获取 AI 引擎侧最新一帧的带骨架标注 JPEG。"""
+        try:
+            resp = httpx.get(
+                f"{self.settings.ai_engine_url}/v1/streams/{stream_id}/frame.jpg",
+                timeout=8,
+            )
+            if resp.status_code == 200 and resp.content:
+                return resp.content
+        except Exception as exc:
+            logger.warning(f"读取流画面失败: {exc}")
+        return None
+
     def stop_stream(self, stream_id: str) -> None:
         try:
             httpx.post(f"{self.settings.ai_engine_url}/v1/streams/{stream_id}/stop", timeout=8)

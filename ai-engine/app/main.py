@@ -6,7 +6,7 @@ from pathlib import Path
 
 import cv2
 import numpy as np
-from fastapi import FastAPI, File, Query, UploadFile
+from fastapi import FastAPI, File, Query, Response, UploadFile
 from pydantic import BaseModel
 
 from app.runtime import runtime
@@ -86,6 +86,14 @@ def stream_status(stream_id: str):
 def stream_latest(stream_id: str):
     result = app.state.streams.latest(stream_id)
     return {"code": 0 if result else 404, "result": result}
+
+
+@app.get("/v1/streams/{stream_id}/frame.jpg")
+def stream_frame(stream_id: str):
+    buf = app.state.streams.frame_jpg(stream_id)
+    if buf is None:
+        return Response(status_code=404)
+    return Response(content=buf, media_type="image/jpeg")
 
 
 @app.get("/v1/streams")

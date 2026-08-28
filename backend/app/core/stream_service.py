@@ -5,6 +5,7 @@
 """
 from __future__ import annotations
 
+import threading
 import time
 from dataclasses import dataclass
 from pathlib import Path
@@ -22,6 +23,34 @@ from app.schemas.schemas import AIInferResponse
 _REPO_ROOT = Path(__file__).resolve().parents[3]
 _DATA_VIDEO_DIR = _REPO_ROOT / "data" / "videos"
 _VIDEO_EXTS = (".mp4", ".avi", ".mkv")
+_SKELETON_EDGES = [
+    (0, 1), (0, 2), (1, 3), (2, 4),
+    (5, 6), (5, 7), (6, 8), (7, 9), (8, 10),
+    (5, 11), (6, 12), (11, 12),
+    (11, 13), (12, 14), (13, 15), (14, 16),
+]
+_LEVEL_BGR = {"red": (0, 0, 255), "orange": (0, 140, 255), "yellow": (0, 215, 255), "green": (0, 200, 0)}
+
+
+def _draw_skeleton(frame: np.ndarray, keypoints: list, bbox: list, level: str) -> np.ndarray:
+    out = frame.copy()
+    color = _LEVEL_BGR.get(level or "", (0, 200, 0))
+    if bbox and len(bbox) == 4:
+        x1, y1, x2, y2 = (int(round(float(v))) for v in bbox[:4])
+        cv2.rectangle(out, (x1, y1), (x2, y2), (0, 255, 0), 2)
+    pts = []
+    for p in (keypoints or [])[:17]:
+        if len(p) >= 3 and float(p[2]) >= 0.3:
+            pts.append((int(round(float(p[0]))), int(round(float(p[1]))), float(p[2])))
+        else:
+            pts.append(None)
+    for pt in pts:
+        if pt is not None:
+            cv2.circle(out, (pt[0], pt[1]), 3, color, -1)
+    for a, b in _SKELETON_EDGES:
+        if a < len(pts) and b < len(pts) and pts[a] is not None and pts[b] is not None:
+            cv2.line(out, (pts[a][0], pts[a][1]), (pts[b][0], pts[b][1]), (0, 255, 255), 2)
+    return out
 
 
 @dataclass
@@ -39,6 +68,8 @@ class StreamService:
         self._sim_cams: dict[int, SimCamera] = {}
         self._video_caps: dict[int, cv2.VideoCapture] = {}
         self._video_paths: dict[int, str] = {}
+        self._latest_results: dict[int, AIInferResponse] = {}
+        self._video_lock = threading.RLock()
 
     def reset_device(self, device_id: int) -> None:
         self._sim_cams.pop(device_id, None)
@@ -46,6 +77,21 @@ class StreamService:
         if cap is not None:
             cap.release()
         self._video_paths.pop(device_id, None)
+        self._latest_results.pop(device_id, None)
+
+    def set_latest_result(self, device_id: int, result: AIInferResponse | None) -> None:
+        if result is not None:
+            self._latest_results[device_id] = result
+        else:
+            self._latest_results.pop(device_id, None)
+
+    def get_latest_result(self, device_id: int) -> AIInferResponse | None:
+        return self._latest_results.get(device_id)
+
+    def draw_overlay(self, frame: np.ndarray, infer: AIInferResponse) -> np.ndarray:
+        if infer is None or not infer.keypoints:
+            return frame
+        return _draw_skeleton(frame, infer.keypoints, infer.bbox, infer.level)
 
     def resolve_video_path(self, url: str) -> str:
         """把本地视频地址解析为绝对路径，兼容多种写法；RTSP/HTTP 原样返回。"""
@@ -117,31 +163,33 @@ class StreamService:
         return FramePacket(device.id, frame, meta, time.time())
 
     def _read_opencv(self, device: Device, is_file: bool = False) -> np.ndarray:
-        resolved = self.resolve_video_path(device.access_url or "")
-        cached = self._video_paths.get(device.id)
-        cap = self._video_caps.get(device.id)
+        # OpenCV VideoCapture 非线程安全，多线程并发 read() 会触发 FFmpeg 断言崩溃，串行化访问。
+        with self._video_lock:
+            resolved = self.resolve_video_path(device.access_url or "")
+            cached = self._video_paths.get(device.id)
+            cap = self._video_caps.get(device.id)
 
-        if cap is None or (cached is not None and cached != resolved):
-            if cap is not None:
-                cap.release()
-            cap = cv2.VideoCapture(resolved)
-            if not cap.isOpened():
-                cap.release()
-                self._video_caps.pop(device.id, None)
-                self._video_paths.pop(device.id, None)
-                logger.warning(f"打开视频源失败: {resolved}")
-                raise RuntimeError(f"无法打开视频源 {resolved}")
-            self._video_caps[device.id] = cap
-            self._video_paths[device.id] = resolved
+            if cap is None or (cached is not None and cached != resolved):
+                if cap is not None:
+                    cap.release()
+                cap = cv2.VideoCapture(resolved)
+                if not cap.isOpened():
+                    cap.release()
+                    self._video_caps.pop(device.id, None)
+                    self._video_paths.pop(device.id, None)
+                    logger.warning(f"打开视频源失败: {resolved}")
+                    raise RuntimeError(f"无法打开视频源 {resolved}")
+                self._video_caps[device.id] = cap
+                self._video_paths[device.id] = resolved
 
-        ok, frame = cap.read()
-        if not ok and is_file:
-            cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
             ok, frame = cap.read()
-        if not ok:
-            frame = np.zeros((720, 1280, 3), dtype=np.uint8)
-            frame[:] = (52, 56, 68)
-        return frame
+            if not ok and is_file:
+                cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
+                ok, frame = cap.read()
+            if not ok:
+                frame = np.zeros((720, 1280, 3), dtype=np.uint8)
+                frame[:] = (52, 56, 68)
+            return frame
 
     def encode_jpeg(self, frame: np.ndarray, quality: int = 80) -> bytes:
         ok, buf = cv2.imencode(".jpg", frame, [cv2.IMWRITE_JPEG_QUALITY, quality])

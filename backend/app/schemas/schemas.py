@@ -85,6 +85,8 @@ class AIInferResponse(BaseModel):
     risk_factors: list[RiskFactor] = Field(default_factory=list)
     risk_score: float = 0.0
     level: str = "green"  # green/yellow/orange/red
+    keypoints: list[list[float]] = Field(default_factory=list)
+    bbox: list[float] = Field(default_factory=list)
     frame_ms: int = 0
     mock: bool = False
 
