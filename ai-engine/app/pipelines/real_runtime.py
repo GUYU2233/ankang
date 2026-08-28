@@ -9,6 +9,8 @@ import cv2
 import numpy as np
 from loguru import logger
 
+_BASE_DIR = Path(__file__).resolve().parents[2]  # ai-engine 目录
+
 
 class RealRuntime:
     """真实推理流水线。
@@ -19,12 +21,13 @@ class RealRuntime:
     """
 
     def __init__(self, model_path: str | None = None) -> None:
-        self.model_path = model_path or "models/yolov8n-pose.pt"
-        self.temporal_model_path = os.getenv("TEMPORAL_MODEL_PATH", "models/tcn_fall.onnx")
+        self.model_path = model_path or str(_BASE_DIR / "models" / "yolov8n-pose.pt")
+        self.temporal_model_path = os.getenv("TEMPORAL_MODEL_PATH", str(_BASE_DIR / "models" / "tcn_fall.onnx"))
         self._model = None
         self._temporal = None
         self._buffers: dict[str, deque[np.ndarray]] = {}
-        self.temporal_window = 32
+        self.temporal_window = int(os.getenv("TEMPORAL_WINDOW", "32"))
+        self.fall_threshold = float(os.getenv("FALL_THRESHOLD", "0.95"))
 
     def _load_model(self):
         if self._model is None:
@@ -37,6 +40,25 @@ class RealRuntime:
                 logger.info(f"姿态模型不可用: {exc}")
                 self._model = False
         return self._model if self._model is not False else None
+
+    def reset_stream(self, stream_id: str) -> None:
+        self._buffers.pop(stream_id, None)
+
+    def reset_all_streams(self) -> None:
+        self._buffers.clear()
+
+    def model_info(self) -> dict:
+        pose = self._load_model()
+        temporal = self._load_temporal_model()
+        return {
+            "pose_model": self.model_path,
+            "pose_loaded": pose is not None,
+            "temporal_model": self.temporal_model_path,
+            "temporal_loaded": temporal is not None,
+            "temporal_window": self.temporal_window,
+            "fall_threshold": self.fall_threshold,
+            "onnx_providers": temporal.get_providers() if temporal else [],
+        }
 
     def _load_temporal_model(self):
         if self._temporal is None:
@@ -57,7 +79,7 @@ class RealRuntime:
     def _normalize_skeleton(kpts: np.ndarray) -> np.ndarray:
         out = np.zeros_like(kpts, dtype=np.float32)
         conf = kpts[:, 2]
-        valid = conf > 0.0
+        valid = conf >= 0.3
         xy = kpts[:, :2]
         if valid[5] and valid[6] and valid[11] and valid[12]:
             shoulder = (xy[5] + xy[6]) / 2.0
@@ -112,7 +134,10 @@ class RealRuntime:
         temporal_prob = self._temporal_fall(kpts, stream_id)
         if temporal_prob is not None:
             fall_prob = temporal_prob
-            fall_detected = temporal_prob >= 0.5
+            fall_detected = temporal_prob >= self.fall_threshold
+        elif self._load_temporal_model() is not None:
+            # 时序模型已加载但窗口未满：暖机期不触发跌倒，仅保留几何风险因子
+            fall_detected = False
         risk_factors = self._risk_factors(kpts, frame_bgr.shape, fall_prob)
         risk_score = max(fall_prob, min(0.9, sum(float(f["value"]) for f in risk_factors) / len(risk_factors)))
         level = "green"

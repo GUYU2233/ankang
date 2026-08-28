@@ -23,5 +23,14 @@ class AIRuntime:
         result["mock"] = result.get("mock", False)
         return result
 
+    def reset_stream(self, stream_id: str) -> None:
+        self.real.reset_stream(stream_id)
+
+    def reset_all_streams(self) -> None:
+        self.real.reset_all_streams()
+
+    def model_info(self) -> dict:
+        return self.real.model_info()
+
 
 runtime = AIRuntime()

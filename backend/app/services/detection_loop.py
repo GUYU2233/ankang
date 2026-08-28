@@ -48,13 +48,28 @@ class DetectionLoop:
             if broadcast_msg:
                 await manager.broadcast({"type": "alert", "data": broadcast_msg})
 
+    def _is_stream_source(self, device: Device) -> bool:
+        url = (device.access_url or "").strip()
+        if not url:
+            return False
+        return url.lower().startswith("rtsp://") or url.lower().endswith((".mp4", ".avi", ".mkv"))
+
     def _process_device(self, device_id: int):
         with SessionLocal() as db:
             device = db.get(Device, device_id)
             if device is None:
                 return None
-            packet = stream_service.get_frame(device)
-            infer = ai_client.infer_frame(packet.frame, stream_id=f"device-{device.id}")
+            stream_id = f"device-{device.id}"
+            if self._is_stream_source(device):
+                ai_client.ensure_stream(stream_id, device.access_url, target_fps=15.0)
+                infer = ai_client.get_stream_latest(stream_id)
+                if infer is None:
+                    packet = stream_service.get_frame(device)
+                    infer = ai_client.infer_frame(packet.frame, stream_id=stream_id)
+            else:
+                packet = stream_service.get_frame(device)
+                infer = ai_client.infer_frame(packet.frame, stream_id=stream_id)
             if infer is None:
+                packet = stream_service.get_frame(device)
                 infer = stream_service.build_demo_result(device, packet.meta)
             return self.alert_engine.process(db, device, infer, infer.risk_score, time.time())
