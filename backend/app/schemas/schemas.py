@@ -79,6 +79,8 @@ class AIInferResponse(BaseModel):
     person_count: int = 0
     fall_detected: bool = False
     fall_prob: float = 0.0
+    nearfall_prob: float = 0.0
+    gait_unsteadiness: float = 0.0
     fall_type: str = ""
     risk_factors: list[RiskFactor] = Field(default_factory=list)
     risk_score: float = 0.0

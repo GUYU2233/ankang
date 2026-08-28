@@ -9,6 +9,8 @@ from app.core.risk_scoring import (
     RiskConfig,
     RiskResult,
     RiskRuleEngine,
+    _clamp01,
+    build_trigger_reason,
     extract_kinematic,
     level_of,
 )
@@ -30,10 +32,14 @@ class RiskEngine:
         """综合评分：返回 RiskResult(score, level, factors, events)。"""
         kin = extract_kinematic(infer)
         beh, beh_events = self.tracker.update(subject_key, scene, infer, now_ts, kin)
+        gait_ai = getattr(infer, "gait_unsteadiness", None)
+        if gait_ai is not None:
+            beh["gait_unsteadiness"] = max(beh.get("gait_unsteadiness", 0.0), _clamp01(gait_ai))
         fall = bool(getattr(infer, "fall_detected", False))
         fall_prob = float(getattr(infer, "fall_prob", 0.0) or 0.0)
         result = self.rules.score(kin, beh, fall, fall_prob)
         result.events = list(beh_events) + list(result.events)
+        result.trigger_reason = build_trigger_reason(result.factors, result.events, fall)
         return result
 
     def push_and_score(self, subject_key: str, score: float) -> float:

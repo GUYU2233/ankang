@@ -26,13 +26,14 @@ class FactorSpec:
 
 
 FACTOR_SPECS: dict[str, FactorSpec] = {
-    "body_lean": FactorSpec("body_lean", "躯干倾斜", 0.16, "0-0.4", "", "kinematic", "肩髋中心横向偏移与躯干长度之比"),
-    "support_base": FactorSpec("support_base", "支撑面不稳", 0.10, "0-0.3", "", "kinematic", "双踝间距相对躯干长度过窄"),
-    "posture_height": FactorSpec("posture_height", "姿态高度异常", 0.20, "0-0.3", "", "kinematic", "髋部离地高度过低(疑似倒地/坐地)"),
-    "inactivity": FactorSpec("inactivity", "长时间静止", 0.16, "0-0.4", "", "behavioral", "持续静止/久坐久卧"),
-    "bathroom_dwell": FactorSpec("bathroom_dwell", "卫生间停留", 0.12, "0-0.4", "", "behavioral", "卫生间连续停留时间"),
-    "night_trips": FactorSpec("night_trips", "夜间频繁离床", 0.10, "0-0.4", "", "behavioral", "夜间卧室出现次数"),
-    "gait_unsteadiness": FactorSpec("gait_unsteadiness", "步态不稳(时序)", 0.16, "0-0.3", "", "behavioral", "躯干倾斜的时序波动"),
+    "body_lean": FactorSpec("body_lean", "躯干倾斜", 0.12, "0-0.4", "", "kinematic", "肩髋中心横向偏移与躯干长度之比"),
+    "support_base": FactorSpec("support_base", "支撑面不稳", 0.08, "0-0.3", "", "kinematic", "双踝间距相对躯干长度过窄"),
+    "posture_height": FactorSpec("posture_height", "姿态高度异常", 0.14, "0-0.3", "", "kinematic", "髋部离地高度过低(疑似倒地/坐地)"),
+    "nearfall_prob": FactorSpec("nearfall_prob", "跌倒前兆", 0.18, "0-0.3", "", "kinematic", "未完成跌倒的姿态前兆(快速下蹲/踉跄/髋部下沉后回升)"),
+    "inactivity": FactorSpec("inactivity", "长时间静止", 0.14, "0-0.4", "", "behavioral", "持续静止/久坐久卧"),
+    "bathroom_dwell": FactorSpec("bathroom_dwell", "卫生间停留", 0.10, "0-0.4", "", "behavioral", "卫生间连续停留时间"),
+    "night_trips": FactorSpec("night_trips", "夜间频繁离床", 0.08, "0-0.4", "", "behavioral", "夜间卧室出现次数"),
+    "gait_unsteadiness": FactorSpec("gait_unsteadiness", "步态不稳", 0.16, "0-0.3", "", "behavioral", "躯干倾斜波动 + 踝轨迹 + 躯干抖动"),
 }
 
 
@@ -58,6 +59,7 @@ class RiskResult:
     level: AlertLevel
     factors: list[dict[str, Any]]
     events: list[str]
+    trigger_reason: str = ""
 
 
 def level_of(score: float, fall_detected: bool = False) -> AlertLevel:
@@ -88,6 +90,9 @@ def extract_kinematic(infer: Any) -> dict[str, float]:
         spec = FACTOR_SPECS.get(key or "")
         if spec and spec.source == "kinematic":
             out[key] = _clamp01(value)
+    nf = getattr(infer, "nearfall_prob", None)
+    if nf is not None:
+        out["nearfall_prob"] = max(out.get("nearfall_prob", 0.0), _clamp01(nf))
     return out
 
 
@@ -95,6 +100,62 @@ def _fmt_minutes(minutes: float) -> str:
     if minutes >= 60:
         return f"{minutes / 60:.1f}小时"
     return f"{minutes:.0f}分钟"
+
+
+_POSE_REASON_KEYS = ("gait_unsteadiness", "nearfall_prob", "body_lean", "support_base", "posture_height")
+_EVENT_COVERS = {
+    "inactivity": "长时间静止",
+    "bathroom_dwell": "卫生间停留",
+    "night_trips": "夜间频繁离床",
+}
+
+
+def build_trigger_reason(
+    factors: list[dict[str, Any]],
+    events: list[str],
+    fall_detected: bool = False,
+) -> str:
+    """把高贡献因子与行为事件压成一句可读原因，例如：步态不稳(0.82) + 卫生间停留超时。"""
+    parts: list[str] = []
+    seen: set[str] = set()
+
+    def add(text: str) -> None:
+        text = (text or "").strip()
+        if not text or text in seen:
+            return
+        seen.add(text)
+        parts.append(text)
+
+    if fall_detected:
+        add("疑似跌倒")
+
+    by_key = {str(f.get("key") or ""): f for f in factors}
+    for key in _POSE_REASON_KEYS:
+        f = by_key.get(key)
+        if not f:
+            continue
+        value = float(f.get("value") or 0.0)
+        if value < 0.45:
+            continue
+        add(f"{f.get('label') or key}({value:.2f})")
+
+    for e in events:
+        add(e)
+
+    event_blob = "".join(events)
+    ranked = sorted(factors, key=lambda f: float(f.get("value") or 0.0), reverse=True)
+    for f in ranked:
+        key = str(f.get("key") or "")
+        value = float(f.get("value") or 0.0)
+        if value < 0.45 or key in _POSE_REASON_KEYS:
+            continue
+        cover = _EVENT_COVERS.get(key)
+        if cover and cover in event_blob:
+            continue
+        add(f"{f.get('label') or key}({value:.2f})")
+        if len(parts) >= 4:
+            break
+    return " + ".join(parts[:4])
 
 
 class BehavioralTracker:
@@ -211,13 +272,20 @@ class RiskRuleEngine:
             events.append("疑似跌倒")
 
         # 规则升档：卫生间隔间停留 -> 橙；久坐/久卧、夜间频繁离床、步态不稳 -> 黄。
+        # 高 nearfall_prob 升黄/橙，但不视为已跌倒（不抬到 fall_floor/红）。
         if beh.get("bathroom_dwell", 0.0) >= 1.0:
             score = max(score, self.config.orange_score)
         if beh.get("inactivity", 0.0) >= 1.0 or beh.get("night_trips", 0.0) >= 1.0:
             score = max(score, self.config.yellow_score)
         if beh.get("gait_unsteadiness", 0.0) >= 0.8:
             score = max(score, self.config.yellow_score)
+        nearfall = kin.get("nearfall_prob", 0.0)
+        if nearfall >= 0.70:
+            score = max(score, self.config.orange_score)
+        elif nearfall >= 0.45:
+            score = max(score, self.config.yellow_score)
 
         score = round(_clamp01(score), 3)
         level = level_of(score, fall_detected)
-        return RiskResult(score=score, level=level, factors=factors, events=events)
+        reason = build_trigger_reason(factors, events, fall_detected)
+        return RiskResult(score=score, level=level, factors=factors, events=events, trigger_reason=reason)
