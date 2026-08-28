@@ -21,11 +21,4 @@ logs/
 !data/**/*.npz
 ai-engine/runs/
 
-# 数据清单、标注、元数据纳入 Git；原始视频仅保留本地。
-data/**/*.mp4
-data/**/*.avi
-data/**/*.mov
-data/**/*.mkv
-data/**/*.webm
-data/**/*.flv
-data/**/*.m4v
+# 数据清单、标注、元数据纳入普通 Git；原始视频纳入 Git LFS。
