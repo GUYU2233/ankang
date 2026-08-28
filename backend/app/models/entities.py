@@ -102,3 +102,42 @@ class NotificationLog(Base):
     content: Mapped[str] = mapped_column(Text, default="")
     status: Mapped[str] = mapped_column(String(16), default="sent")
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now)
+
+
+class MultimodalConfigRecord(Base):
+    """多模态视觉巡检运行配置（单行，id 恒为 1）。"""
+    __tablename__ = "multimodal_config"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    provider: Mapped[str] = mapped_column(String(32), default="qwen")  # qwen/glm/gpt/gemini/custom
+    model: Mapped[str] = mapped_column(String(128), default="")
+    base_url: Mapped[str] = mapped_column(String(255), default="")
+    api_key: Mapped[str] = mapped_column(String(255), default="")
+    enabled: Mapped[bool] = mapped_column(Boolean, default=False)
+    interval_seconds: Mapped[int] = mapped_column(Integer, default=60)
+    temperature: Mapped[float] = mapped_column(Float, default=0.2)
+    max_tokens: Mapped[int] = mapped_column(Integer, default=800)
+    prompt_override: Mapped[str | None] = mapped_column(Text, nullable=True)
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now, onupdate=datetime.now)
+
+
+class MonitoringSnapshot(Base):
+    """多模态巡检快照与识别结果。"""
+    __tablename__ = "monitoring_snapshots"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    device_id: Mapped[int] = mapped_column(ForeignKey("devices.id"), index=True)
+    resident_id: Mapped[int | None] = mapped_column(ForeignKey("residents.id"), nullable=True)
+    provider: Mapped[str] = mapped_column(String(32), default="")
+    model: Mapped[str] = mapped_column(String(128), default="")
+    event_type: Mapped[str] = mapped_column(String(32), index=True, default="normal")
+    severity: Mapped[str] = mapped_column(String(16), default="low")
+    confidence: Mapped[float] = mapped_column(Float, default=0.0)
+    has_issue: Mapped[bool] = mapped_column(Boolean, default=False)
+    level: Mapped[AlertLevel] = mapped_column(SAEnum(AlertLevel), default=AlertLevel.GREEN)
+    summary: Mapped[str] = mapped_column(String(255), default="")
+    detail_json: Mapped[str | None] = mapped_column(Text, nullable=True)
+    snapshot_path: Mapped[str] = mapped_column(String(255), default="")
+    alert_id: Mapped[int | None] = mapped_column(ForeignKey("alert_events.id"), nullable=True)
+    latency_ms: Mapped[int] = mapped_column(Integer, default=0)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now, index=True)

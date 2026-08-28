@@ -30,6 +30,17 @@ class Settings(BaseSettings):
     risk_window_seconds: int = 300
     alert_confirm_frames: int = 3
 
+    # 多模态视觉巡检（定时截图 + 大模型识别）
+    multimodal_enabled: bool = False
+    multimodal_provider: str = "qwen"  # qwen/glm/gpt/gemini/custom
+    multimodal_model: str = ""  # 为空则用提供商默认模型
+    multimodal_base_url: str = ""  # 为空则用提供商默认接入点
+    multimodal_api_key: str = ""
+    multimodal_interval_seconds: int = 60
+    multimodal_temperature: float = 0.2
+    multimodal_max_tokens: int = 800
+    multimodal_timeout_seconds: float = 30.0
+
     # 前端跨域
     cors_origins: str = "http://localhost:5173,http://127.0.0.1:5173"
 

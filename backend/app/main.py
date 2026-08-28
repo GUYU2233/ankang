@@ -4,11 +4,12 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from loguru import logger
 
-from app.api import alerts, dashboard, devices, residents, streams
+from app.api import alerts, dashboard, devices, multimodal, residents, streams
 from app.config import get_settings
 from app.core.device_manager import get_device_manager
 from app.db import SessionLocal, init_db
 from app.services.detection_loop import DetectionLoop
+from app.services.multimodal_loop import multimodal_loop
 from app.ws.alert_ws import router as ws_router
 
 
@@ -22,13 +23,18 @@ async def lifespan(app: FastAPI):
         mgr.ensure_demo_devices(db)
         mgr.sync_cloud_devices(db)
     loop = DetectionLoop()
+    multimodal_loop._stop = False
     task = None
+    mtask = None
     import asyncio
     task = asyncio.create_task(loop.run_forever())
+    mtask = asyncio.create_task(multimodal_loop.run_forever())
     yield
     loop.stop()
-    if task:
-        task.cancel()
+    multimodal_loop.stop()
+    for t in (task, mtask):
+        if t:
+            t.cancel()
 
 
 app = FastAPI(title=get_settings().app_name, version="0.1.0", lifespan=lifespan)
@@ -48,6 +54,7 @@ app.include_router(residents.router, prefix=get_settings().api_prefix)
 app.include_router(alerts.router, prefix=get_settings().api_prefix)
 app.include_router(streams.router, prefix=get_settings().api_prefix)
 app.include_router(dashboard.router, prefix=get_settings().api_prefix)
+app.include_router(multimodal.router, prefix=get_settings().api_prefix)
 
 
 @app.get("/api/v1/health")

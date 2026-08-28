@@ -114,3 +114,63 @@ class LiveFrameOut(BaseModel):
     device_id: int
     image_base64: str
     captured_at: datetime
+
+
+class MultimodalConfigUpdate(BaseModel):
+    provider: str = "qwen"
+    model: str = ""
+    base_url: str = ""
+    api_key: str = ""
+    enabled: bool = False
+    interval_seconds: int = Field(default=60, ge=10, le=86400)
+    temperature: float = Field(default=0.2, ge=0.0, le=2.0)
+    max_tokens: int = Field(default=800, ge=64, le=8192)
+    prompt_override: str | None = None
+
+
+class MultimodalConfigOut(BaseModel):
+    provider: str
+    model: str
+    base_url: str
+    api_key_masked: str
+    enabled: bool
+    interval_seconds: int
+    temperature: float
+    max_tokens: int
+    prompt_override: str | None = None
+    updated_at: datetime | None = None
+
+
+class ProviderPreset(BaseModel):
+    name: str
+    label: str
+    base_url: str
+    models: list[str]
+    default_model: str
+
+
+class SnapshotOut(BaseModel):
+    id: int
+    device_id: int
+    resident_id: int | None = None
+    provider: str
+    model: str
+    event_type: str
+    severity: str
+    confidence: float
+    has_issue: bool
+    level: str
+    summary: str
+    detail_json: str | None = None
+    latency_ms: int
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
+
+class AnalyzeResponse(BaseModel):
+    code: int = 0
+    device_id: int
+    snapshot: SnapshotOut | None = None
+    result: dict = Field(default_factory=dict)
