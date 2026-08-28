@@ -124,6 +124,7 @@ class AlertEngine:
             ))
 
         resident = db.get(Resident, resident_id) if resident_id else None
+        guardian_phone = (resident.guardian_phone or "") if resident else ""
         logger.info(f"告警触发: {title} level={level.value} score={score}")
         return {
             "id": alert.id,
@@ -136,9 +137,11 @@ class AlertEngine:
             "scene": device.scene,
             "resident_id": resident_id,
             "resident_name": resident.name if resident else "",
+            "guardian_phone": guardian_phone,
             "score": score,
             "fall_prob": infer.fall_prob,
             "nearfall_prob": getattr(infer, "nearfall_prob", 0.0),
             "trigger_reason": trigger_reason,
+            "status": "pending",
             "created_at": now.isoformat(),
         }

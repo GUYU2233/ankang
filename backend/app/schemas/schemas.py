@@ -44,6 +44,7 @@ class DeviceOut(BaseModel):
     channel_no: int
     enabled: bool
     resident_id: int | None = None
+    resident_name: str = ""
     created_at: datetime
 
     class Config:
@@ -61,10 +62,25 @@ class AlertOut(BaseModel):
     detail_json: str | None = None
     confirmed: bool
     handled: bool
+    status: str = "pending"
+    resident_name: str = ""
+    guardian_phone: str = ""
+    confirmed_by: str | None = None
+    confirmed_at: datetime | None = None
+    confirm_note: str | None = None
+    handled_by: str | None = None
+    handled_at: datetime | None = None
+    handle_note: str | None = None
+    closed_at: datetime | None = None
     created_at: datetime
 
     class Config:
         from_attributes = True
+
+
+class AlertActionIn(BaseModel):
+    operator: str = ""  # 处理人，空则后端记为“值班员”
+    note: str | None = None  # confirm 写入 confirm_note，handle 写入 handle_note
 
 
 class RiskFactor(BaseModel):
@@ -73,6 +89,23 @@ class RiskFactor(BaseModel):
     value: float = 0.0
     unit: str = ""
     normal_range: str = ""
+
+
+class RiskTrendPoint(BaseModel):
+    date: str  # YYYY-MM-DD
+    avg_score: float = 0.0
+    max_score: float = 0.0
+    count: int = 0
+
+
+class ResidentRiskProfileOut(BaseModel):
+    resident_id: int
+    resident_name: str = ""
+    latest_score: float = 0.0
+    latest_level: str = "green"
+    factors: list[RiskFactor] = Field(default_factory=list)
+    trend: list[RiskTrendPoint] = Field(default_factory=list)
+    updated_at: datetime | None = None
 
 
 class AIInferResponse(BaseModel):

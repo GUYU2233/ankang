@@ -14,6 +14,14 @@ class AlertLevel(str, Enum):
     RED = "red"
 
 
+class AlertStatus(str, Enum):
+    """告警处置状态机：待确认 -> 已确认 -> 已处置 -> 已归档。"""
+    PENDING = "pending"      # 待确认
+    CONFIRMED = "confirmed"  # 已确认
+    HANDLED = "handled"      # 已处置
+    CLOSED = "closed"        # 已归档
+
+
 class Resident(Base):
     __tablename__ = "residents"
 
@@ -63,6 +71,15 @@ class AlertEvent(Base):
     detail_json: Mapped[str | None] = mapped_column(Text, nullable=True)
     confirmed: Mapped[bool] = mapped_column(Boolean, default=False)
     handled: Mapped[bool] = mapped_column(Boolean, default=False)
+    # 处置状态机（用 String(16) 而非 SAEnum，规避老库枚举迁移问题）
+    status: Mapped[str] = mapped_column(String(16), default="pending", server_default="pending", index=True)
+    confirmed_by: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    confirmed_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    confirm_note: Mapped[str | None] = mapped_column(Text, nullable=True)
+    handled_by: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    handled_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    handle_note: Mapped[str | None] = mapped_column(Text, nullable=True)
+    closed_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now, index=True)
 
 

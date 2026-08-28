@@ -43,19 +43,36 @@
         </el-card>
       </el-col>
     </el-row>
+
+    <el-row :gutter="16" style="margin-top: 16px;">
+      <el-col :span="24">
+        <el-card shadow="never">
+          <template #header>
+            <div class="card-header">
+              <span>近7天风险趋势</span>
+              <el-button size="small" @click="loadTrend">刷新</el-button>
+            </div>
+          </template>
+          <div ref="trendEl" class="trend-box"></div>
+        </el-card>
+      </el-col>
+    </el-row>
   </div>
 </template>
 
 <script setup>
 import { computed, onMounted, onBeforeUnmount, ref } from 'vue'
+import * as echarts from 'echarts'
 import { ElNotification } from 'element-plus'
 import api from '../api'
 
 const stats = ref({ total_devices: 0, online_devices: 0, total_residents: 0, today_alerts: 0, today_falls: 0, avg_risk_score: 0, latest_alerts: [] })
 const online = ref(false)
 const wsOpen = ref(false)
+const trendEl = ref(null)
 let ws = null
 let timer = null
+let trendChart = null
 
 const cards = computed(() => [
   { label: '设备总数', value: stats.value.total_devices },
@@ -78,6 +95,26 @@ async function loadStats() {
   }
 }
 
+async function loadTrend() {
+  try {
+    const data = await api.riskTrend(7)
+    const trend = Array.isArray(data) ? data : (data.trend || [])
+    if (!trendEl.value) return
+    if (!trendChart) trendChart = echarts.init(trendEl.value)
+    trendChart.setOption({
+      tooltip: { trigger: 'axis' },
+      legend: { data: ['平均风险分', '峰值'] },
+      grid: { left: 40, right: 20, top: 40, bottom: 30 },
+      xAxis: { type: 'category', data: trend.map(p => p.date) },
+      yAxis: { type: 'value', min: 0, max: 1 },
+      series: [
+        { name: '平均风险分', type: 'line', smooth: true, areaStyle: {}, data: trend.map(p => p.avg_score) },
+        { name: '峰值', type: 'line', smooth: true, lineStyle: { type: 'dashed' }, data: trend.map(p => p.max_score) }
+      ]
+    })
+  } catch (e) { /* 趋势加载失败不打断看板 */ }
+}
+
 function connectWs() {
   const proto = location.protocol === 'https:' ? 'wss' : 'ws'
   ws = new WebSocket(proto + '://' + location.host + '/ws/alerts')
@@ -88,21 +125,32 @@ function connectWs() {
       const msg = JSON.parse(ev.data)
       if (msg.type === 'alert') {
         const d = msg.data || {}
-        ElNotification({ title: '收到预警', message: (d.title || '') + ' [' + (d.scene || '') + ']', type: d.level === 'red' ? 'error' : 'warning', duration: 6000 })
+        const name = d.resident_name ? d.resident_name + ' · ' : ''
+        const msgText = name + (d.title || '') + ' [' + (d.scene || '') + ']' + (d.guardian_phone ? '（家属: ' + d.guardian_phone + '）' : '')
+        ElNotification({ title: '收到预警', message: msgText, type: d.level === 'red' ? 'error' : 'warning', duration: 6000 })
         loadStats()
+        loadTrend()
       }
     } catch (e) { /* ignore */ }
   }
 }
 
+function onResize() {
+  if (trendChart) trendChart.resize()
+}
+
 onMounted(() => {
   loadStats()
+  loadTrend()
   connectWs()
   timer = setInterval(loadStats, 5000)
+  window.addEventListener('resize', onResize)
 })
 onBeforeUnmount(() => {
   if (timer) clearInterval(timer)
   if (ws) ws.close()
+  window.removeEventListener('resize', onResize)
+  if (trendChart) { trendChart.dispose(); trendChart = null }
 })
 </script>
 
@@ -110,4 +158,5 @@ onBeforeUnmount(() => {
 .stat-value { font-size: 30px; font-weight: 700; color: #303133; }
 .stat-label { color: #909399; margin-top: 6px; }
 .card-header { display: flex; justify-content: space-between; align-items: center; }
+.trend-box { height: 300px; width: 100%; }
 </style>

@@ -4,15 +4,32 @@ from sqlalchemy.orm import Session
 
 from app.core.device_manager import get_device_manager
 from app.db import get_db
-from app.models.entities import Device
+from app.models.entities import Device, Resident
 from app.schemas.schemas import DeviceCreate, DeviceOut
 
 router = APIRouter(prefix="/devices", tags=["设备管理"])
 
 
+def enrich_devices(db: Session, devices: list[Device]) -> list[DeviceOut]:
+    """按 resident_id 批量富化设备所属老人姓名（未绑定为空串）。"""
+    resident_ids = {d.resident_id for d in devices if d.resident_id}
+    residents: dict[int, Resident] = {}
+    if resident_ids:
+        rows = db.scalars(select(Resident).where(Resident.id.in_(resident_ids))).all()
+        residents = {r.id: r for r in rows}
+    out: list[DeviceOut] = []
+    for d in devices:
+        obj = DeviceOut.model_validate(d)
+        r = residents.get(d.resident_id)
+        obj.resident_name = r.name if r else ""
+        out.append(obj)
+    return out
+
+
 @router.get("", response_model=list[DeviceOut])
 def list_devices(db: Session = Depends(get_db)):
-    return db.scalars(select(Device).order_by(Device.id)).all()
+    devices = db.scalars(select(Device).order_by(Device.id)).all()
+    return enrich_devices(db, devices)
 
 
 @router.post("", response_model=DeviceOut)
@@ -24,7 +41,7 @@ def add_device(payload: DeviceCreate, db: Session = Depends(get_db)):
     db.add(device)
     db.commit()
     db.refresh(device)
-    return device
+    return enrich_devices(db, [device])[0]
 
 
 @router.get("/{device_id}", response_model=DeviceOut)
@@ -32,7 +49,7 @@ def get_device(device_id: int, db: Session = Depends(get_db)):
     device = db.get(Device, device_id)
     if device is None:
         raise HTTPException(status_code=404, detail="设备不存在")
-    return device
+    return enrich_devices(db, [device])[0]
 
 
 @router.put("/{device_id}", response_model=DeviceOut)
@@ -44,7 +61,7 @@ def update_device(device_id: int, payload: DeviceCreate, db: Session = Depends(g
         setattr(device, k, v)
     db.commit()
     db.refresh(device)
-    return device
+    return enrich_devices(db, [device])[0]
 
 
 @router.delete("/{device_id}")

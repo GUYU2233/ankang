@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, event
+from sqlalchemy import create_engine, event, text
 from sqlalchemy.orm import DeclarativeBase, sessionmaker
 
 from app.config import get_settings
@@ -37,6 +37,45 @@ class Base(DeclarativeBase):
 def init_db() -> None:
     from app.models import entities  # noqa: F401 确保模型已注册
     Base.metadata.create_all(bind=engine)
+    _migrate_sqlite(engine)
+
+
+# 旧库缺失列的 ADD COLUMN DDL（SQLite 常量默认，满足 ADD COLUMN 约束）
+_ALERT_MIGRATE_DDLS = {
+    "status": "VARCHAR(16) NOT NULL DEFAULT 'pending'",
+    "confirmed_by": "VARCHAR(64)",
+    "handled_by": "VARCHAR(64)",
+    "confirmed_at": "DATETIME",
+    "handled_at": "DATETIME",
+    "closed_at": "DATETIME",
+    "confirm_note": "TEXT",
+    "handle_note": "TEXT",
+}
+
+
+def _migrate_sqlite(eng=None) -> None:
+    """对 SQLite 旧库的 alert_events 表做增量迁移：补齐状态机列并回填老布尔语义。幂等可重复。"""
+    eng = eng or engine
+    if not str(eng.url).startswith("sqlite"):
+        return
+    with eng.begin() as conn:
+        has_table = conn.execute(
+            text("SELECT name FROM sqlite_master WHERE type='table' AND name='alert_events'")
+        ).scalar()
+        if not has_table:
+            return
+        cols = {row[1] for row in conn.execute(text("PRAGMA table_info(alert_events)"))}
+        missing = [name for name in _ALERT_MIGRATE_DDLS if name not in cols]
+        for name in missing:
+            conn.execute(text(f"ALTER TABLE alert_events ADD COLUMN {name} {_ALERT_MIGRATE_DDLS[name]}"))
+        if "status" in missing:
+            # 将老布尔语义回填进状态机
+            conn.execute(text(
+                "UPDATE alert_events SET status = CASE "
+                "WHEN handled = 1 THEN 'handled' WHEN confirmed = 1 THEN 'confirmed' ELSE 'pending' END"
+            ))
+        # create_all 对已存在表不会补建索引，必须显式创建
+        conn.execute(text("CREATE INDEX IF NOT EXISTS ix_alert_events_status ON alert_events (status)"))
 
 
 def get_db():

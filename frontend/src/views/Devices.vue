@@ -16,6 +16,12 @@
       <el-table-column prop="device_serial" label="序列号/地址" width="160" />
       <el-table-column prop="vendor" label="接入方式" width="100" />
       <el-table-column prop="scene" label="场景" width="90" />
+      <el-table-column label="归属老人" width="110">
+        <template #default="s">
+          <el-tag v-if="residentName(s.row)" size="small" type="success">{{ residentName(s.row) }}</el-tag>
+          <el-tag v-else size="small" type="info">未绑定</el-tag>
+        </template>
+      </el-table-column>
       <el-table-column label="视频源" show-overflow-tooltip>
         <template #default="s">{{ sourceText(s.row) }}</template>
       </el-table-column>
@@ -48,6 +54,11 @@
             <el-option label="卫生间" value="卫生间" />
           </el-select>
         </el-form-item>
+        <el-form-item label="归属老人">
+          <el-select v-model="form.resident_id" clearable filterable placeholder="不绑定老人" style="width:100%">
+            <el-option v-for="r in residents" :key="r.id" :label="r.name" :value="r.id" />
+          </el-select>
+        </el-form-item>
         <el-form-item v-if="form.vendor === 'sim'" label="本地视频">
           <el-select v-model="videoPath" clearable filterable placeholder="留空使用自动合成画面" style="width:100%">
             <el-option v-for="v in videos" :key="v.path" :label="videoLabel(v)" :value="v.path" />
@@ -72,28 +83,37 @@ import api from '../api'
 
 const devices = ref([])
 const videos = ref([])
+const residents = ref([])
 const dialogVisible = ref(false)
 const editingId = ref(null)
 const videoPath = ref('')
-const form = reactive({ device_name: '', device_serial: '', vendor: 'sim', scene: '客厅', access_url: '' })
+const form = reactive({ device_name: '', device_serial: '', vendor: 'sim', scene: '客厅', access_url: '', model: null, channel_no: 1, enabled: true, resident_id: null })
 
 function sourceText(row) { return row.access_url || '合成画面' }
 function videoLabel(v) { return v.scene ? v.name + '（' + v.scene + '）' : v.name }
+function residentName(row) {
+  if (row.resident_name) return row.resident_name
+  const r = residents.value.find(x => x.id === row.resident_id)
+  return r ? r.name : ''
+}
 
 async function load() { devices.value = await api.devices() }
 async function loadVideos() { videos.value = await api.localVideos() }
+async function loadResidents() { residents.value = await api.residents() }
 
 function openAdd() {
   editingId.value = null
   videoPath.value = ''
-  Object.assign(form, { device_name: '', device_serial: '', vendor: 'sim', scene: '客厅', access_url: '' })
+  Object.assign(form, { device_name: '', device_serial: '', vendor: 'sim', scene: '客厅', access_url: '', model: null, channel_no: 1, enabled: true, resident_id: null })
   dialogVisible.value = true
 }
 function openEdit(row) {
   editingId.value = row.id
   Object.assign(form, {
     device_name: row.device_name, device_serial: row.device_serial,
-    vendor: row.vendor, scene: row.scene, access_url: row.access_url || ''
+    vendor: row.vendor, scene: row.scene, access_url: row.access_url || '',
+    model: row.model || null, channel_no: row.channel_no || 1,
+    enabled: row.enabled !== undefined ? row.enabled : true, resident_id: row.resident_id || null
   })
   const url = row.access_url || ''
   videoPath.value = /.(mp4|avi|mkv)$/i.test(url) ? url : ''
@@ -102,11 +122,12 @@ function openEdit(row) {
 watch(videoPath, (v) => { if (form.vendor === 'sim') form.access_url = v || '' })
 
 async function onSave() {
+  const payload = { ...form, resident_id: form.resident_id || null }
   if (editingId.value) {
-    await api.updateDevice(editingId.value, form)
+    await api.updateDevice(editingId.value, payload)
     ElMessage.success('设备已更新')
   } else {
-    await api.addDevice(form)
+    await api.addDevice(payload)
     ElMessage.success('设备已登记')
   }
   dialogVisible.value = false
@@ -123,7 +144,7 @@ async function onDelete(row) {
   ElMessage.success('已删除')
   load()
 }
-onMounted(() => { load(); loadVideos() })
+onMounted(() => { load(); loadVideos(); loadResidents() })
 </script>
 
 <style scoped>
