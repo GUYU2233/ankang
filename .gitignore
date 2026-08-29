@@ -32,3 +32,6 @@ ai-engine/runs/
 # CVAT 本地部署与调试残留（不推送）
 .cvat/
 .cvat_labels_job.json
+
+# ultralytics 数据集缓存
+*.cache
