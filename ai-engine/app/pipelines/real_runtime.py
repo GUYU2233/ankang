@@ -32,13 +32,13 @@ _register_cuda_dll_dir()
 class RealRuntime:
     """真实推理流水线。
 
-    骨架估计：ultralytics YOLOv8-Pose（yolov8n-pose.pt，首次运行自动下载或放入
+    骨架估计：ultralytics YOLO26-Pose（yolo26s-pose.pt，可用 POSE_MODEL_PATH 覆盖，首次运行自动下载或放入
     ai-engine/models/ 目录）；跌倒判定：肩-髋中心高度与躯干倾角启发式；
     后续接入数据集训练 ST-GCN / TCN 后替换 fall_detect 方法。
     """
 
     def __init__(self, model_path: str | None = None) -> None:
-        self.model_path = model_path or str(_BASE_DIR / "models" / "yolov8n-pose.pt")
+        self.model_path = model_path or os.getenv("POSE_MODEL_PATH", str(_BASE_DIR / "models" / "yolo26s-pose.pt"))
         self.temporal_model_path = os.getenv("TEMPORAL_MODEL_PATH", str(_BASE_DIR / "models" / "tcn_fall.onnx"))
         self._model = None
         self._temporal = None
