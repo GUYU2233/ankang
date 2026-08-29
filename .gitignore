@@ -25,3 +25,10 @@ logs/
 ai-engine/runs/
 
 # 数据清单、标注、元数据纳入普通 Git；原始视频纳入 Git LFS。
+
+# docker compose 插件（本地环境工具）
+.docker-config/
+
+# CVAT 本地部署与调试残留（不推送）
+.cvat/
+.cvat_labels_job.json
