@@ -1,11 +1,12 @@
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI
+from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from loguru import logger
 
-from app.api import alerts, dashboard, devices, multimodal, residents, streams
+from app.api import alerts, dashboard, devices, feedback, multimodal, residents, streams
 from app.config import get_settings
+from app.core.auth import require_api_key
 from app.core.device_manager import get_device_manager
 from app.db import SessionLocal, init_db
 from app.services.detection_loop import DetectionLoop
@@ -49,14 +50,35 @@ app.add_middleware(
 )
 
 app.include_router(ws_router)
-app.include_router(devices.router, prefix=get_settings().api_prefix)
-app.include_router(residents.router, prefix=get_settings().api_prefix)
-app.include_router(alerts.router, prefix=get_settings().api_prefix)
-app.include_router(streams.router, prefix=get_settings().api_prefix)
-app.include_router(dashboard.router, prefix=get_settings().api_prefix)
-app.include_router(multimodal.router, prefix=get_settings().api_prefix)
+_protected = [Depends(require_api_key)]
+app.include_router(devices.router, prefix=get_settings().api_prefix, dependencies=_protected)
+app.include_router(residents.router, prefix=get_settings().api_prefix, dependencies=_protected)
+app.include_router(alerts.router, prefix=get_settings().api_prefix, dependencies=_protected)
+app.include_router(streams.router, prefix=get_settings().api_prefix, dependencies=_protected)
+app.include_router(dashboard.router, prefix=get_settings().api_prefix, dependencies=_protected)
+app.include_router(multimodal.router, prefix=get_settings().api_prefix, dependencies=_protected)
+app.include_router(feedback.router, prefix=get_settings().api_prefix, dependencies=_protected)
 
 
 @app.get("/api/v1/health")
 def health():
-    return {"code": 0, "status": "up", "app": get_settings().app_name}
+    settings = get_settings()
+    return {
+        "code": 0,
+        "status": "up",
+        "app": settings.app_name,
+        "auth_mode": settings.auth_mode,
+        "components": {"database": "up", "detection_loop": "running", "multimodal": "enabled" if settings.multimodal_enabled else "disabled"},
+    }
+
+
+@app.get("/api/v1/metrics")
+def metrics():
+    """轻量 JSON 指标，供监控系统采集。"""
+    from app.core.notify import manager
+    from app.core.stream_service import stream_service
+    return {
+        "websocket_connections": len(manager.active),
+        "active_cached_devices": len(stream_service._latest_results),
+        "multimodal": multimodal_loop.status(),
+    }

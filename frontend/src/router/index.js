@@ -7,6 +7,7 @@ const routes = [
   { path: '/residents', name: 'residents', component: () => import('../views/Residents.vue'), meta: { title: '老人档案' } },
   { path: '/alerts', name: 'alerts', component: () => import('../views/Alerts.vue'), meta: { title: '告警中心' } },
   { path: '/live', name: 'live', component: () => import('../views/Live.vue'), meta: { title: '实时画面' } },
+  { path: '/replay/:alertId', name: 'replay', component: () => import('../views/Replay.vue'), meta: { title: '告警录像核实' } },
   { path: '/multimodal', name: 'multimodal', component: () => import('../views/Multimodal.vue'), meta: { title: '视觉巡检' } }
 ]
 

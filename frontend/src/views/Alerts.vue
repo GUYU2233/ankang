@@ -21,7 +21,7 @@
         </div>
       </div>
     </template>
-    <el-table :data="alerts" size="small">
+    <el-table :data="alerts" size="small" highlight-current-row @row-click="onRowClick" style="cursor:pointer;">
       <el-table-column prop="id" label="ID" width="60" />
       <el-table-column prop="level" label="级别" width="100">
         <template #default="s">
@@ -47,13 +47,35 @@
       <el-table-column prop="created_at" label="时间" width="180" />
       <el-table-column label="操作" width="100">
         <template #default="s">
-          <el-button v-if="statusOf(s.row) === 'pending'" size="small" type="primary" @click="openAction(s.row, 'confirm')">确认</el-button>
+          <el-button v-if="statusOf(s.row) === 'pending'" size="small" type="primary" @click.stop="goToLive(s.row)">去核实</el-button>
           <el-button v-else-if="statusOf(s.row) === 'confirmed'" size="small" type="warning" @click="openAction(s.row, 'handle')">处置</el-button>
           <el-button v-else-if="statusOf(s.row) === 'handled'" size="small" type="info" @click="openAction(s.row, 'close')">归档</el-button>
           <el-tag v-else size="small" type="info">已归档</el-tag>
         </template>
       </el-table-column>
     </el-table>
+
+    <!-- 告警详情弹窗 -->
+    <el-dialog v-model="detailVisible" title="告警详情" width="560px">
+      <el-descriptions v-if="detailRow" :column="2" border size="small">
+        <el-descriptions-item label="告警编号">{{ detailRow.alert_no }}</el-descriptions-item>
+        <el-descriptions-item label="等级"><el-tag :type="levelType(detailRow.level)" size="small">{{ levelText(detailRow.level) }}</el-tag></el-descriptions-item>
+        <el-descriptions-item label="内容" :span="2">{{ detailRow.title }}</el-descriptions-item>
+        <el-descriptions-item label="类型">{{ detailRow.event_type }}</el-descriptions-item>
+        <el-descriptions-item label="状态"><el-tag :type="statusType(statusOf(detailRow))" size="small">{{ statusText(statusOf(detailRow)) }}</el-tag></el-descriptions-item>
+        <el-descriptions-item label="归属老人">{{ detailRow.resident_name || '-' }}</el-descriptions-item>
+        <el-descriptions-item label="联系电话">{{ detailRow.guardian_phone || '-' }}</el-descriptions-item>
+        <el-descriptions-item label="处理人">{{ detailRow.handled_by || detailRow.confirmed_by || '-' }}</el-descriptions-item>
+        <el-descriptions-item label="确认备注">{{ detailRow.confirm_note || '-' }}</el-descriptions-item>
+        <el-descriptions-item label="处置备注">{{ detailRow.handle_note || '-' }}</el-descriptions-item>
+        <el-descriptions-item label="时间">{{ detailRow.created_at }}</el-descriptions-item>
+      </el-descriptions>
+      <img v-if="hasSnapshot(detailRow)" :src="'/api/v1/alerts/' + detailRow.id + '/image'" class="evidence-image" alt="告警证据截图" />
+      <template #footer>
+        <el-button @click="goToLive(detailRow)" type="primary">查看告警录像并核实</el-button>
+        <el-button @click="detailVisible = false">关闭</el-button>
+      </template>
+    </el-dialog>
 
     <el-dialog v-model="actionVisible" :title="actionTitle" width="480px">
       <el-form :model="actionForm" label-width="80px">
@@ -74,8 +96,11 @@
 
 <script setup>
 import { computed, onMounted, reactive, ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import api from '../api'
+
+const router = useRouter()
 
 const alerts = ref([])
 const filterLevel = ref('')
@@ -85,6 +110,22 @@ const actionVisible = ref(false)
 const action = ref('confirm')
 const actionRow = ref(null)
 const actionForm = reactive({ operator: '值班员', note: '' })
+const detailVisible = ref(false)
+const detailRow = ref(null)
+
+function onRowClick(row) {
+  detailRow.value = row
+  detailVisible.value = true
+}
+function goToLive(row) {
+  detailVisible.value = false
+  actionVisible.value = false
+  if (row && row.device_id) {
+    router.push({ name: 'replay', params: { alertId: row.id } })
+  } else {
+    ElMessage.warning('该告警缺少来源设备或录像')
+  }
+}
 const actionTitle = computed(() => ({ confirm: '确认告警', handle: '处置告警', close: '归档告警' }[action.value] || '处置告警'))
 
 function levelType(level) { return { red: 'danger', orange: 'warning', yellow: 'warning', green: 'success' }[level] || 'info' }
@@ -96,6 +137,9 @@ function statusOf(row) {
 }
 function statusType(st) { return { pending: 'warning', confirmed: 'primary', handled: 'success', closed: 'info' }[st] || 'info' }
 function statusText(st) { return { pending: '待确认', confirmed: '已确认', handled: '已处置', closed: '已归档' }[st] || st }
+function hasSnapshot(row) {
+  try { return !!JSON.parse(row?.detail_json || '{}').snapshot_path } catch (_) { return false }
+}
 
 async function load() {
   alerts.value = await api.alerts(filterLevel.value || null, filterStatus.value || null)
@@ -129,5 +173,6 @@ onMounted(load)
 </script>
 
 <style scoped>
-.card-header { display: flex; justify-content: space-between; align-items: center; }
+.card-header { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+.evidence-image { width: 100%; max-height: 360px; object-fit: contain; margin-top: 12px; border-radius: 6px; background: #111; }
 </style>

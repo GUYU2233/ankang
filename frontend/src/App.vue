@@ -8,7 +8,7 @@
         <el-menu-item index="/residents">老人档案</el-menu-item>
         <el-menu-item index="/live">实时画面</el-menu-item>
         <el-menu-item index="/multimodal">视觉巡检</el-menu-item>
-        <el-menu-item index="/alerts">告警中心</el-menu-item>
+        <el-menu-item index="/alerts">告警中心<el-badge v-if="alertCount" :value="alertCount" :max="99" class="nav-badge" /></el-menu-item>
       </el-menu>
     </el-aside>
     <el-container>
@@ -29,13 +29,26 @@ import { onBeforeUnmount, onMounted, ref } from 'vue'
 import api from './api'
 
 const health = ref(false)
+const alertCount = ref(0)
 let timer = null
 
 async function checkHealth() {
   try { await api.health(); health.value = true } catch (e) { health.value = false }
 }
 
-onMounted(() => { checkHealth(); timer = setInterval(checkHealth, 10000) })
+function connectWs() {
+  const proto = location.protocol === 'https:' ? 'wss' : 'ws'
+  const ws = new WebSocket(proto + '://' + location.host + '/ws/alerts')
+  ws.onmessage = (ev) => {
+    try {
+      const msg = JSON.parse(ev.data)
+      if (msg.type === 'alert') { alertCount.value++ }
+    } catch (_) {}
+  }
+  ws.onclose = () => { setTimeout(connectWs, 5000) }
+}
+
+onMounted(() => { checkHealth(); connectWs(); timer = setInterval(checkHealth, 10000) })
 onBeforeUnmount(() => { if (timer) clearInterval(timer) })
 </script>
 
@@ -48,4 +61,5 @@ html, body, #app { height: 100%; margin: 0; padding: 0; background: #f5f6f8; col
 .topbar { display: flex; align-items: center; justify-content: space-between; background: #fff; border-bottom: 1px solid #e5e6eb; }
 .page-title { font-size: 16px; font-weight: 600; }
 .main-body { padding: 16px; }
+.nav-badge { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); }
 </style>

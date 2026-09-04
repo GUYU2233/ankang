@@ -6,6 +6,7 @@ from dataclasses import dataclass
 from sqlalchemy.orm import Session
 
 from app.config import get_settings
+from app.core.secrets import decrypt_secret, encrypt_secret
 from app.models.entities import MultimodalConfigRecord
 
 
@@ -63,7 +64,7 @@ class MultimodalConfigService:
             provider=rec.provider,
             model=rec.model,
             base_url=rec.base_url,
-            api_key=rec.api_key,
+            api_key=decrypt_secret(rec.api_key, "multimodal.api_key"),
             enabled=rec.enabled,
             interval_seconds=rec.interval_seconds,
             temperature=rec.temperature,
@@ -102,6 +103,8 @@ class MultimodalConfigService:
             db.add(rec)
         for k, v in fields.items():
             if hasattr(rec, k):
+                if k == "api_key" and v:
+                    v = encrypt_secret(v, "multimodal.api_key")
                 setattr(rec, k, v)
         db.commit()
         db.refresh(rec)

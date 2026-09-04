@@ -8,6 +8,10 @@ class Settings(BaseSettings):
     app_name: str = "智护安康智能预警系统"
     api_prefix: str = "/api/v1"
 
+    # 开发默认关闭；生产设置 AUTH_MODE=required 并注入高熵 API_KEY
+    auth_mode: str = "disabled"
+    api_key: str = ""
+
     # 数据存储：本地开发默认 SQLite；生产使用 MySQL 见 deploy/init.sql
     database_url: str = "sqlite:///./zhihu_ankang.db"
 

@@ -31,7 +31,7 @@ from app.models.entities import (
 from app.services.multimodal_client import MultimodalError, analyze_image
 from app.services.multimodal_config import RuntimeConfig, get_multimodal_config_service
 
-SNAPSHOT_DIR = Path("runtime/multimodal")
+SNAPSHOT_DIR = Path(__file__).resolve().parents[3] / "runtime" / "multimodal"
 
 _TITLE_BY_EVENT = {
     "fall": "{scene} 多模态识别疑似跌倒",
@@ -50,8 +50,11 @@ _EVENT_TYPE_BY = {
 def _save_snapshot(frame, device_id: int) -> str:
     SNAPSHOT_DIR.mkdir(parents=True, exist_ok=True)
     path = SNAPSHOT_DIR / f"dev{device_id}_{int(time.time() * 1000)}.jpg"
-    cv2.imwrite(str(path), frame)
-    return str(path)
+    ok, buf = cv2.imencode(".jpg", frame, [cv2.IMWRITE_JPEG_QUALITY, 88])
+    if not ok:
+        raise MultimodalError("截图编码失败")
+    path.write_bytes(buf.tobytes())
+    return str(path.resolve())
 
 
 def _emit_alert(db, device: Device, result: dict, snapshot_id: int, latency_ms: int, snapshot_path: str) -> dict:
@@ -216,7 +219,7 @@ class MultimodalLoop:
             await manager.broadcast({"type": "alert", "data": res["broadcast"]})
         return res
 
-    def _analyze_device_id(self, device_id: int, cfg: RuntimeConfig) -> dict:
+    def _analyze_device_id(self, device_id: int, cfg: RuntimeConfig, emit_alert: bool = True) -> dict:
         with SessionLocal() as db:
             device = db.get(Device, device_id)
             if device is None:
@@ -269,7 +272,7 @@ class MultimodalLoop:
             db.flush()
 
             broadcast = None
-            if result["alert"]:
+            if emit_alert and result["alert"]:
                 broadcast = _emit_alert(db, device, result, snp.id, latency_ms, snapshot_path)
                 snp.alert_id = broadcast["id"]
 

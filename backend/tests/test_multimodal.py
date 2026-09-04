@@ -90,7 +90,7 @@ def test_provider_presets():
 def test_resolve_endpoint():
     base, model, key = _resolve_endpoint("qwen", "", "", "sk-test")
     assert base == "https://dashscope.aliyuncs.com/compatible-mode/v1"
-    assert model == "qwen-vl-max"
+    assert model == PROVIDER_PRESETS["qwen"]["default_model"]
     assert key == "sk-test"
     try:
         _resolve_endpoint("custom", "", "", "")

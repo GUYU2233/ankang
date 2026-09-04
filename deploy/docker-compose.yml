@@ -47,8 +47,17 @@ services:
       CORS_ORIGINS: http://localhost,http://localhost:5173
       EZVIZ_APP_KEY: ${EZVIZ_APP_KEY:-}
       EZVIZ_APP_SECRET: ${EZVIZ_APP_SECRET:-}
+      AUTH_MODE: ${AUTH_MODE:-required}
+      API_KEY: ${API_KEY:?set API_KEY}
+      SECRET_ENCRYPTION_KEY: ${SECRET_ENCRYPTION_KEY:?set SECRET_ENCRYPTION_KEY}
     ports:
       - "8000:8000"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/v1/health')"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
     depends_on:
       - mysql
       - ai-engine
@@ -58,14 +67,26 @@ services:
       context: ..
       dockerfile: deploy/ai-engine.Dockerfile
     container_name: zha-ai-engine
+    restart: unless-stopped
+    environment:
+      POSE_MODEL_PATH: models/yolo26s-pose-ft.onnx
+      TEMPORAL_MODEL_PATH: models/tcn_fall.onnx
+      STGCN_MODEL_PATH: runs/stgcn_binary_w32.onnx
+    gpus: all
     ports:
       - "8100:8100"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8100/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   frontend:
     build:
       context: ..
       dockerfile: deploy/frontend.Dockerfile
     container_name: zha-frontend
+    restart: unless-stopped
     ports:
       - "8080:80"
     depends_on:

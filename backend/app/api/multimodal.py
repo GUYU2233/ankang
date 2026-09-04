@@ -119,7 +119,8 @@ def snapshot_image(snapshot_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="快照不存在")
     from pathlib import Path
 
-    path = Path(snp.snapshot_path)
-    if not path.exists():
-        raise HTTPException(status_code=404, detail="快照文件已清理")
+    path = Path(snp.snapshot_path).resolve()
+    root = (Path(__file__).resolve().parents[3] / "runtime" / "multimodal").resolve()
+    if root not in path.parents or not path.is_file():
+        raise HTTPException(status_code=404, detail="快照文件已清理或路径非法")
     return FileResponse(str(path), media_type="image/jpeg")

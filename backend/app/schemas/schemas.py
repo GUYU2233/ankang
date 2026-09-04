@@ -60,6 +60,7 @@ class AlertOut(BaseModel):
     event_type: str
     title: str
     detail_json: str | None = None
+    replay_clip_id: str | None = None
     confirmed: bool
     handled: bool
     status: str = "pending"
@@ -81,6 +82,25 @@ class AlertOut(BaseModel):
 class AlertActionIn(BaseModel):
     operator: str = ""  # 处理人，空则后端记为“值班员”
     note: str | None = None  # confirm 写入 confirm_note，handle 写入 handle_note
+
+
+class AlertVerifyIn(BaseModel):
+    operator: str = "值班员"
+    decision: bool
+    note: str | None = None
+    target: str | None = None  # fall / risk；缺省按 alert.event_type 推断
+
+
+class AlertAIVerifyOut(BaseModel):
+    alert_id: int
+    target: str
+    decision: bool
+    confidence: float
+    weight: float
+    summary: str = ""
+    suggestion: str = ""
+    fused_score: float
+    fused_decision: bool
 
 
 class RiskFactor(BaseModel):
@@ -120,6 +140,9 @@ class AIInferResponse(BaseModel):
     level: str = "green"  # green/yellow/orange/red
     keypoints: list[list[float]] = Field(default_factory=list)
     bbox: list[float] = Field(default_factory=list)
+    others_bbox: list[list[float]] = Field(default_factory=list)
+    track_id: int | None = None
+    tracks: list[dict] = Field(default_factory=list)
     frame_ms: int = 0
     mock: bool = False
 
@@ -200,6 +223,30 @@ class SnapshotOut(BaseModel):
     summary: str
     detail_json: str | None = None
     latency_ms: int
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
+
+class WebhookConfigCreate(BaseModel):
+    name: str = ""
+    platform: str = "custom"
+    webhook_url: str
+    secret: str | None = None
+    enabled: bool = True
+    trigger_levels: str = "red,orange"
+
+
+class WebhookConfigOut(BaseModel):
+    id: int
+    name: str
+    platform: str
+    webhook_url: str = ""
+    webhook_url_masked: str = ""
+    secret_present: bool = False
+    enabled: bool
+    trigger_levels: str
     created_at: datetime
 
     class Config:

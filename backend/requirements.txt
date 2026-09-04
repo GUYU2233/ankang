@@ -11,3 +11,5 @@ pyyaml>=6.0
 numpy>=1.26
 opencv-python-headless>=4.9
 pymysql>=1.1
+cryptography>=42.0
+PyJWT>=2.8

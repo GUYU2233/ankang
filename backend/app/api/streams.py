@@ -1,5 +1,6 @@
 from fastapi import APIRouter, HTTPException
-from fastapi.responses import Response
+from fastapi.responses import Response, StreamingResponse
+import httpx
 
 from app.core.stream_service import stream_service
 from app.db import SessionLocal
@@ -32,6 +33,27 @@ def _load_device(device_id: int) -> Device | None:
 def list_local_videos():
     """列出 data/videos 下可循环播放的本地视频，供模拟设备选用。"""
     return stream_service.list_local_videos()
+
+
+@router.get("/{device_id}/mjpeg")
+async def get_mjpeg(device_id: int):
+    device = _load_device(device_id)
+    if device is None:
+        raise HTTPException(status_code=404, detail="设备不存在")
+    if not _is_stream_source(device):
+        raise HTTPException(status_code=409, detail="该设备暂不支持连续流，请使用 frame.jpg")
+    stream_id = f"device-{device.id}"
+    source = stream_service.resolve_video_path((device.access_url or "").strip())
+    ai_client.ensure_stream(stream_id, source, target_fps=15.0)
+
+    async def proxy():
+        async with httpx.AsyncClient(timeout=httpx.Timeout(10.0, read=None)) as client:
+            async with client.stream("GET", ai_client.mjpeg_url(stream_id)) as resp:
+                resp.raise_for_status()
+                async for chunk in resp.aiter_bytes():
+                    yield chunk
+
+    return StreamingResponse(proxy(), media_type="multipart/x-mixed-replace; boundary=frame", headers={"Cache-Control": "no-cache, no-store", "Pragma": "no-cache", "X-Accel-Buffering": "no"})
 
 
 @router.get("/{device_id}/frame.jpg")

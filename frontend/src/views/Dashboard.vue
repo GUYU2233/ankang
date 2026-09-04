@@ -1,5 +1,8 @@
 <template>
   <div>
+    <!-- 告警提示音（可自定义音源） -->
+    <audio ref="alertAudio" :src="alertSoundUrl" preload="auto" />
+
     <el-row :gutter="16">
       <el-col :span="6" v-for="c in cards" :key="c.label">
         <el-card shadow="never">
@@ -49,6 +52,69 @@
         <el-card shadow="never">
           <template #header>
             <div class="card-header">
+              <span>系统设置：告警通知 &amp; 提示音</span>
+              <el-button size="small" @click="showSettings = !showSettings">{{ showSettings ? '收起' : '展开' }}</el-button>
+            </div>
+          </template>
+          <div v-if="showSettings" style="display:flex;gap:24px;flex-wrap:wrap;">
+            <!-- 提示音设置 -->
+            <div style="flex:1;min-width:280px;">
+              <h4>跌倒提示音</h4>
+              <el-input v-model="alertSoundUrl" placeholder="提示音 URL（mp3/wav）" size="small">
+                <template #append><el-button size="small" @click="saveSoundUrl">保存</el-button></template>
+              </el-input>
+              <el-button size="small" style="margin-top:6px;" @click="alertAudio && alertAudio.play().catch(()=>{})">试听</el-button>
+              <el-button size="small" style="margin-top:6px;" @click="alertSoundUrl='https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3';saveSoundUrl()">恢复默认</el-button>
+            </div>
+            <!-- Webhook 渠道 -->
+            <div style="flex:2;min-width:400px;">
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+                <h4 style="margin:0;">消息推送渠道</h4>
+                <el-button size="small" type="primary" @click="openWebhookForm()">添加</el-button>
+              </div>
+              <el-table :data="webhooks" size="small" max-height="200">
+                <el-table-column prop="name" label="名称" width="100" />
+                <el-table-column label="平台" width="80">
+                  <template #default="s">{{ {wechat:'微信',dingtalk:'钉钉',feishu:'飞书',custom:'自定义'}[s.row.platform] || s.row.platform }}</template>
+                </el-table-column>
+                <el-table-column prop="webhook_url_masked" label="地址" show-overflow-tooltip />
+                <el-table-column prop="trigger_levels" label="触发等级" width="90" />
+                <el-table-column label="启用" width="60">
+                  <template #default="s"><el-tag :type="s.row.enabled?'success':'info'" size="small">{{ s.row.enabled?'是':'否' }}</el-tag></template>
+                </el-table-column>
+                <el-table-column label="操作" width="140">
+                  <template #default="s">
+                    <el-button size="small" @click="editWebhook(s.row)">编辑</el-button>
+                    <el-button size="small" @click="testWebhook(s.row.id)">测试</el-button>
+                    <el-button size="small" type="danger" @click="deleteWebhook(s.row.id)">删除</el-button>
+                  </template>
+                </el-table-column>
+              </el-table>
+              <!-- Webhook 编辑表单 -->
+              <el-form v-if="showWebhookForm" inline size="small" style="margin-top:8px;background:#fafafa;padding:8px;border-radius:4px;">
+                <el-form-item label="名称"><el-input v-model="webhookForm.name" size="small" style="width:120px" placeholder="如：家属钉钉群" /></el-form-item>
+                <el-form-item label="平台">
+                  <el-select v-model="webhookForm.platform" size="small" style="width:100px">
+                    <el-option label="钉钉" value="dingtalk" /><el-option label="飞书" value="feishu" /><el-option label="企业微信" value="wechat" /><el-option label="自定义" value="custom" />
+                  </el-select>
+                </el-form-item>
+                <el-form-item label="Webhook URL"><el-input v-model="webhookForm.webhook_url" size="small" style="width:240px" placeholder="https://..." /></el-form-item>
+                <el-form-item label="密钥"><el-input v-model="webhookForm.secret" size="small" style="width:130px" placeholder="签名密钥（可选）" /></el-form-item>
+                <el-form-item label="触发等级"><el-input v-model="webhookForm.trigger_levels" size="small" style="width:100px" placeholder="red,orange" /></el-form-item>
+                <el-form-item label="启用"><el-switch v-model="webhookForm.enabled" size="small" /></el-form-item>
+                <el-form-item><el-button size="small" type="primary" @click="saveWebhook">保存</el-button></el-form-item>
+              </el-form>
+            </div>
+          </div>
+        </el-card>
+      </el-col>
+    </el-row>
+
+    <el-row :gutter="16" style="margin-top: 16px;">
+      <el-col :span="24">
+        <el-card shadow="never">
+          <template #header>
+            <div class="card-header">
               <span>近7天风险趋势</span>
               <el-button size="small" @click="loadTrend">刷新</el-button>
             </div>
@@ -61,18 +127,65 @@
 </template>
 
 <script setup>
-import { computed, onMounted, onBeforeUnmount, ref } from 'vue'
+import { computed, onMounted, onBeforeUnmount, reactive, ref } from 'vue'
 import * as echarts from 'echarts'
-import { ElNotification } from 'element-plus'
+import { ElMessage, ElNotification } from 'element-plus'
 import api from '../api'
 
 const stats = ref({ total_devices: 0, online_devices: 0, total_residents: 0, today_alerts: 0, today_falls: 0, avg_risk_score: 0, latest_alerts: [] })
 const online = ref(false)
 const wsOpen = ref(false)
 const trendEl = ref(null)
+const alertAudio = ref(null)
 let ws = null
 let timer = null
 let trendChart = null
+
+// 告警提示音设置（localStorage 持久化）
+const alertSoundUrl = ref(localStorage.getItem('ankang_alert_sound') || 'https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3')
+const showSettings = ref(false)
+const showWebhookForm = ref(false)
+const webhooks = ref([])
+const webhookForm = reactive({ name: '', platform: 'custom', webhook_url: '', secret: '', enabled: true, trigger_levels: 'red,orange' })
+const webhookEditing = ref(null)
+
+function saveSoundUrl() {
+  localStorage.setItem('ankang_alert_sound', alertSoundUrl.value)
+  ElMessage.success('提示音已保存')
+}
+async function loadWebhooks() {
+  try { webhooks.value = await api.webhooks() } catch (_) {}
+}
+async function saveWebhook() {
+  try {
+    if (webhookEditing.value) {
+      await api.updateWebhook(webhookEditing.value, { ...webhookForm })
+    } else {
+      await api.createWebhook({ ...webhookForm })
+    }
+    ElMessage.success('已保存')
+    webhookForm.name = ''; webhookForm.platform = 'custom'; webhookForm.webhook_url = ''; webhookForm.secret = ''; webhookForm.enabled = true; webhookForm.trigger_levels = 'red,orange'
+    webhookEditing.value = null
+    showWebhookForm.value = false
+    loadWebhooks()
+  } catch (e) { ElMessage.error(e.response?.data?.detail || '保存失败') }
+}
+function openWebhookForm() {
+  webhookEditing.value = null
+  showWebhookForm.value = true
+  Object.assign(webhookForm, { name: '', platform: 'custom', webhook_url: '', secret: '', enabled: true, trigger_levels: 'red,orange' })
+}
+function editWebhook(w) {
+  webhookEditing.value = w.id
+  showWebhookForm.value = true
+  Object.assign(webhookForm, { name: w.name, platform: w.platform, webhook_url: '', secret: '', enabled: w.enabled, trigger_levels: w.trigger_levels })
+}
+async function deleteWebhook(id) {
+  try { await api.deleteWebhook(id); ElMessage.success('已删除'); loadWebhooks() } catch (_) {}
+}
+async function testWebhook(id) {
+  try { const r = await api.testWebhook(id); ElMessage[r.ok ? 'success' : 'error'](r.detail) } catch (_) {}
+}
 
 const cards = computed(() => [
   { label: '设备总数', value: stats.value.total_devices },
@@ -128,6 +241,9 @@ function connectWs() {
         const name = d.resident_name ? d.resident_name + ' · ' : ''
         const msgText = name + (d.title || '') + ' [' + (d.scene || '') + ']' + (d.guardian_phone ? '（家属: ' + d.guardian_phone + '）' : '')
         ElNotification({ title: '收到预警', message: msgText, type: d.level === 'red' ? 'error' : 'warning', duration: 6000 })
+        if (d.level === 'red' || d.level === 'orange') {
+          try { alertAudio.value && alertAudio.value.play().catch(() => {}) } catch (_) {}
+        }
         loadStats()
         loadTrend()
       }
@@ -143,6 +259,7 @@ onMounted(() => {
   loadStats()
   loadTrend()
   connectWs()
+  loadWebhooks()
   timer = setInterval(loadStats, 5000)
   window.addEventListener('resize', onResize)
 })

@@ -6,7 +6,8 @@ from pathlib import Path
 
 import cv2
 import numpy as np
-from fastapi import FastAPI, File, Query, Response, UploadFile
+from fastapi import FastAPI, File, HTTPException, Query, Response, UploadFile
+from fastapi.responses import FileResponse, StreamingResponse
 from pydantic import BaseModel
 
 from app.runtime import runtime
@@ -93,7 +94,47 @@ def stream_frame(stream_id: str):
     buf = app.state.streams.frame_jpg(stream_id)
     if buf is None:
         return Response(status_code=404)
-    return Response(content=buf, media_type="image/jpeg")
+    return Response(content=buf, media_type="image/jpeg", headers={"Cache-Control": "no-store"})
+
+
+@app.get("/v1/streams/{stream_id}/mjpeg")
+def stream_mjpeg(stream_id: str):
+    if app.state.streams.status(stream_id).get("error") == "stream not found":
+        return Response(status_code=404)
+    return StreamingResponse(
+        app.state.streams.mjpeg(stream_id),
+        media_type="multipart/x-mixed-replace; boundary=frame",
+        headers={"Cache-Control": "no-cache, no-store", "Pragma": "no-cache", "X-Accel-Buffering": "no"},
+    )
+
+
+class RecordingRequest(BaseModel):
+    alert_id: str
+    post_seconds: float = 5.0
+
+
+@app.post("/v1/streams/{stream_id}/recordings")
+def recording_start(stream_id: str, body: RecordingRequest):
+    try:
+        return {"code": 0, "recording": app.state.streams.trigger_recording(stream_id, body.alert_id, body.post_seconds)}
+    except KeyError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
+
+
+@app.get("/v1/recordings/{clip_id}")
+def recording_status(clip_id: str):
+    try:
+        return {"code": 0, "recording": app.state.streams.recording_status(clip_id)}
+    except KeyError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
+
+
+@app.get("/v1/recordings/{clip_id}/video.mp4")
+def recording_video(clip_id: str):
+    path = app.state.streams.recording_path(clip_id)
+    if path is None:
+        raise HTTPException(status_code=404, detail="回放尚未生成")
+    return FileResponse(str(path), media_type="video/mp4", filename=f"{clip_id}.mp4")
 
 
 @app.get("/v1/streams")

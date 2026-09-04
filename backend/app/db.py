@@ -50,6 +50,7 @@ _ALERT_MIGRATE_DDLS = {
     "closed_at": "DATETIME",
     "confirm_note": "TEXT",
     "handle_note": "TEXT",
+    "replay_clip_id": "VARCHAR(128)",
 }
 
 

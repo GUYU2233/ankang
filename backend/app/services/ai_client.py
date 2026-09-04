@@ -56,6 +56,28 @@ class AIEngineClient:
             logger.warning(f"读取流画面失败: {exc}")
         return None
 
+    def trigger_recording(self, stream_id: str, alert_id: int, post_seconds: float = 5.0) -> dict | None:
+        try:
+            resp = self._client.post(f"{self.settings.ai_engine_url}/v1/streams/{stream_id}/recordings", json={"alert_id": str(alert_id), "post_seconds": post_seconds}, timeout=8)
+            resp.raise_for_status()
+            return resp.json().get("recording")
+        except Exception as exc:
+            logger.warning(f"触发告警回放失败: {exc}")
+            return None
+
+    def recording_status(self, clip_id: str) -> dict | None:
+        try:
+            resp = self._client.get(f"{self.settings.ai_engine_url}/v1/recordings/{clip_id}", timeout=8)
+            return resp.json().get("recording") if resp.status_code == 200 else None
+        except Exception:
+            return None
+
+    def recording_video_url(self, clip_id: str) -> str:
+        return f"{self.settings.ai_engine_url}/v1/recordings/{clip_id}/video.mp4"
+
+    def mjpeg_url(self, stream_id: str) -> str:
+        return f"{self.settings.ai_engine_url}/v1/streams/{stream_id}/mjpeg"
+
     def stop_stream(self, stream_id: str) -> None:
         try:
             self._client.post(f"{self.settings.ai_engine_url}/v1/streams/{stream_id}/stop", timeout=8)

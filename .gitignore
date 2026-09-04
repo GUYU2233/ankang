@@ -35,3 +35,8 @@ ai-engine/runs/
 
 # ultralytics 数据集缓存
 *.cache
+
+# 运行时生成的告警证据、反馈导出与录像
+data/snapshots/
+data/feedback/*.json
+ai-engine/runtime/recordings/

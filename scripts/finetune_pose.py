@@ -29,6 +29,7 @@
 import argparse
 import os
 import sys
+import tempfile
 import time
 from datetime import datetime
 from pathlib import Path
@@ -67,7 +68,8 @@ def preflight(data_path: Path, model_path: Path):
 
     with open(data_path, encoding="utf-8") as f:
         cfg = yaml.safe_load(f) or {}
-    data_dir = Path(cfg.get("path") or data_path.parent)
+    # 数据集根 = yaml 所在目录；忽略 yaml 里可能残留的旧机器绝对路径（可移植性关键）
+    data_dir = data_path.parent
     train_dir = data_dir / cfg.get("train", "images/train")
     val_dir = data_dir / cfg.get("val", "images/val")
     n_train = count_images(train_dir)
@@ -120,10 +122,21 @@ def main():
     project_path = resolve(args.project)
     name = args.name
 
-    preflight(data_path, model_path)
+    data_dir, _train_dir, _val_dir = preflight(data_path, model_path)
+
+    # 可移植性：把 dataset yaml 的 path 覆盖为按项目根解析出的绝对路径，
+    # 写入临时 yaml 再传给 ultralytics（它要求 data 为路径字符串），
+    # 消除跨机器的硬编码绝对路径依赖，且不改动仓库内文件。
+    with open(data_path, encoding="utf-8") as f:
+        data_cfg = yaml.safe_load(f) or {}
+    data_cfg["path"] = str(data_dir)
+    _tmp_f = tempfile.NamedTemporaryFile("w", suffix=".yaml", prefix="pose_ft_resolved_", delete=False, encoding="utf-8")
+    yaml.safe_dump(data_cfg, _tmp_f, allow_unicode=True, sort_keys=False)
+    resolved_data = _tmp_f.name
+    _tmp_f.close()
 
     train_kwargs = dict(
-        data=str(data_path),
+        data=resolved_data,
         epochs=args.epochs,
         batch=args.batch,
         device=args.device,
@@ -150,6 +163,8 @@ def main():
     except KeyboardInterrupt:
         print("\n[中断] 用户中断训练（Ctrl-C）。", file=sys.stderr)
         sys.exit(130)
+    finally:
+        Path(resolved_data).unlink(missing_ok=True)
     elapsed = time.time() - t0
 
     run_dir = project_path / name

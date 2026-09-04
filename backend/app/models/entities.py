@@ -69,6 +69,7 @@ class AlertEvent(Base):
     event_type: Mapped[str] = mapped_column(String(32), default="fall_risk")  # fall_event / fall_risk / behavior_risk
     title: Mapped[str] = mapped_column(String(255), default="")
     detail_json: Mapped[str | None] = mapped_column(Text, nullable=True)
+    replay_clip_id: Mapped[str | None] = mapped_column(String(128), nullable=True, index=True)
     confirmed: Mapped[bool] = mapped_column(Boolean, default=False)
     handled: Mapped[bool] = mapped_column(Boolean, default=False)
     # 处置状态机（用 String(16) 而非 SAEnum，规避老库枚举迁移问题）
@@ -80,6 +81,25 @@ class AlertEvent(Base):
     handled_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
     handle_note: Mapped[str | None] = mapped_column(Text, nullable=True)
     closed_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now, index=True)
+
+
+class AlertFeedback(Base):
+    """人机核验反馈；人工为最高权重，AI 仅作辅助证据。"""
+    __tablename__ = "alert_feedbacks"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    alert_id: Mapped[int] = mapped_column(ForeignKey("alert_events.id"), index=True)
+    device_id: Mapped[int] = mapped_column(ForeignKey("devices.id"), index=True)
+    source: Mapped[str] = mapped_column(String(16), default="human")  # human / vision_ai / detector
+    target: Mapped[str] = mapped_column(String(16), default="risk")  # fall / risk
+    decision: Mapped[bool] = mapped_column(Boolean, default=False)
+    confidence: Mapped[float] = mapped_column(Float, default=1.0)
+    weight: Mapped[float] = mapped_column(Float, default=1.0)
+    operator: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    note: Mapped[str | None] = mapped_column(Text, nullable=True)
+    snapshot_path: Mapped[str | None] = mapped_column(Text, nullable=True)
+    metadata_json: Mapped[str | None] = mapped_column(Text, nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now, index=True)
 
 
@@ -136,6 +156,20 @@ class MultimodalConfigRecord(Base):
     max_tokens: Mapped[int] = mapped_column(Integer, default=800)
     prompt_override: Mapped[str | None] = mapped_column(Text, nullable=True)
     updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now, onupdate=datetime.now)
+
+
+class WebhookConfig(Base):
+    """告警消息推送渠道配置（支持微信/钉钉/飞书/自定义 webhook）。"""
+    __tablename__ = "webhook_configs"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    name: Mapped[str] = mapped_column(String(64), default="")  # 渠道名称，如"家属钉钉群"
+    platform: Mapped[str] = mapped_column(String(32), default="custom")  # wechat/dingtalk/feishu/custom
+    webhook_url: Mapped[str] = mapped_column(String(512), default="")
+    secret: Mapped[str | None] = mapped_column(String(128), nullable=True)  # 签名密钥（钉钉/飞书）
+    enabled: Mapped[bool] = mapped_column(Boolean, default=True)
+    trigger_levels: Mapped[str] = mapped_column(String(64), default="red,orange")  # 触发等级，逗号分隔
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now)
 
 
 class MonitoringSnapshot(Base):

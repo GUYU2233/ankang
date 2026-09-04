@@ -1,5 +1,19 @@
 <template>
   <div>
+    <el-row :gutter="12" style="margin-bottom:16px;">
+      <el-col :span="6" v-for="c in statusCards" :key="c.label">
+        <el-card shadow="hover" :body-style="{padding:'12px 16px'}">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <div :style="{width:'40px',height:'40px',borderRadius:'8px',background:c.bg,display:'flex',alignItems:'center',justifyContent:'center',fontSize:'18px'}">{{ c.icon }}</div>
+            <div>
+              <div style="font-size:22px;font-weight:700;color:#303133;">{{ c.value }}</div>
+              <div style="font-size:12px;color:#909399;">{{ c.label }}</div>
+            </div>
+          </div>
+        </el-card>
+      </el-col>
+    </el-row>
+
     <el-card shadow="never" class="block">
       <template #header>
         <div class="card-header">
@@ -160,6 +174,13 @@ const defaultBase = computed(() => (defaultProvider.value && defaultProvider.val
 const statsRuns = computed(() => (status.value.stats && status.value.stats.runs) || 0)
 const statsAlerts = computed(() => (status.value.stats && status.value.stats.alerts) || 0)
 const statsErrors = computed(() => (status.value.stats && status.value.stats.errors) || 0)
+
+const statusCards = computed(() => [
+  { label: '巡检状态', value: statusText.value, icon: '\u25cf', bg: status.value.running ? '#e8f5e9' : '#f5f5f5' },
+  { label: '累计识别', value: statsRuns.value, icon: '\u25a0', bg: '#e3f2fd' },
+  { label: '累计告警', value: statsAlerts.value, icon: '\u25b2', bg: '#fff3e0' },
+  { label: '累计错误', value: statsErrors.value, icon: '\u2716', bg: '#ffebee' },
+])
 const statusText = computed(() => {
   if (!status.value.enabled) return '未启用'
   return status.value.running ? '运行中' : '已停止'
